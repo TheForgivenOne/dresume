@@ -9,7 +9,7 @@ colors:
   paper-sunken: "#e7e1d3"
   ink: "#191512"
   ink-muted: "#57503f"
-  ink-subtle: "#857c68"
+  ink-subtle: "#6f6754"
   rule: "#cdc4b0"
   rule-strong: "#a2977c"
   desk-night: "#080705"
@@ -61,19 +61,19 @@ typography:
     lineHeight: 1.7
   body:
     fontFamily: "Archivo, ui-sans-serif, system-ui, sans-serif"
-    fontSize: "0.95rem"
+    fontSize: "1rem"
     fontWeight: 400
     lineHeight: 1.7
   note:
     fontFamily: "Archivo, ui-sans-serif, system-ui, sans-serif"
-    fontSize: "0.85rem"
+    fontSize: "1rem"
     fontWeight: 400
     lineHeight: 1.65
   label:
     fontFamily: "Azeret Mono, ui-monospace, monospace"
-    fontSize: "0.62rem"
+    fontSize: "0.7rem"
     fontWeight: 400
-    letterSpacing: "0.16em"
+    letterSpacing: "0.1em"
     textTransform: "uppercase"
   print-name:
     fontFamily: "Libre Caslon Text, Georgia, serif"
@@ -185,7 +185,10 @@ reserved rather than spent.
 - **Dense Ink** (`#191512`): primary text, headings, the sheet edge. Warm black,
   never `#000`.
 - **Muted Ink** (`#57503f`): body copy and secondary values.
-- **Subtle Ink** (`#857c68`): field labels and reference codes.
+- **Subtle Ink** (`#6f6754` light, `#8b8371` dark): field labels and
+  reference codes. It carries text, so it holds 4.5:1 as text in both themes —
+  the previous value measured 3.93:1 and was legal only for type far larger
+  than any label on the page.
 - **Rule** (`#cdc4b0`): hairlines, chip borders, dotted dividers.
 - **Strong Rule** (`#a2977c`): division rules and the header's hairline.
 
@@ -196,6 +199,13 @@ values and hairlines. A warm cast on real paper reads as a rendering fault
 rather than as a document, so the warmth stops at the screen.
 
 ### Named Rules
+
+**The Measured Floor.** Body copy is never below 16px, field labels never below
+11px, and any standalone control is at least 44x44px. These are measured in a
+browser by `scripts/probe-responsive.mjs` across nine widths, not eyeballed —
+the previous values (15.2px body, 9.9px labels, a 36px toggle) all looked
+correct in screenshots and failed on the device the site is actually opened on.
+An inline link inside a sentence is exempt: its target is the text.
 
 **The One Ink Rule.** The reserved carmine appears exactly once per screen, on
 the current appointment. Never on links, hover states, badges, buttons, or
@@ -240,8 +250,13 @@ Screen — nine steps, and no others. Anything outside this list is a bug.
   `h3`.
 - **Measure** (400, 1.05rem, 1.7, max 52ch): the tagline and a detail page's
   summary — the only prose larger than body.
-- **Body** (400, 0.95rem, 1.7, max 68ch): prose and highlights.
-- **Note** (400, 0.85rem, 1.65, max 36ch): marginal notes only.
+- **Body** (400, 1rem, 1.7, max 68ch): prose and highlights. 16px is the
+  legibility floor for copy read on a phone; the step was raised from 0.95rem
+  after measuring 15.2px in the browser.
+- **Note** (400, 1rem, 1.65, max 36ch): marginal notes only, italic. It is a
+  genuine register, not a caption, so it holds the body size rather than
+  dropping below it — 0.85rem measured 13.6px and read as a footnote on a
+  phone. Its smaller *measure* is what makes it secondary; its type size is not.
 - **Label** (400, 0.62rem, 0.16em, uppercase): field headings, reference
   codes, chips, navigation, dates, durations. Nine near-identical sizes were
   deliberately collapsed into this one step; hierarchy among labels comes from
@@ -315,6 +330,13 @@ seal press. Everything else is either static or a state change, and everything
 is suppressed under `prefers-reduced-motion: reduce`, which flattens the sheet
 and every layer to `transform: none`.
 
+**The Flat-Sheet Rule.** `.record-sheet` must stay a flat element. Inside a
+`preserve-3d` context a sticky child projects out of the viewport as it pins —
+leaving a strip of desk above the header — and paint order follows z-position
+rather than `z-index`, so scrolled content renders straight over the bar no
+matter what `z-40` says. The depth context is nested one level down
+(`.depth-stage`) so the header remains ordinary 2D sticky.
+
 ## Shapes
 
 Right angles everywhere except the seal and the theme toggle. Divisions are
@@ -364,9 +386,17 @@ with the scale defined once beneath. Dotted row dividers, two columns.
 
 ### Navigation
 Sticky, inside the sheet's own width, hairline base that appears on scroll.
-Tracked mono capitals at 0.64rem. Below `md` the links collapse into a
-`<details>` disclosure pinned to the bottom-right of the viewport. Links are
-generated from content that exists — a section with no entries gets no link.
+Tracked mono capitals at the label step. The inline links and the identity split
+change at the **same** width (`lg`, 1024px) — an earlier version switched the nav
+at `md` while the layout split at `lg`, and every viewport between the two got
+a six-item nav crowding a wrapping name.
+
+Below `lg` the links collapse into a labelled `<details>` disclosure in the
+header bar, not a floating corner button: a floating control covered content,
+read as an ornament rather than as navigation, and sat exactly where a phone's
+home indicator lives. The panel is opaque, dismisses on select, on Escape, and
+on an outside tap, and every row is 44px. Links are generated from content that
+exists — a section with no entries gets no link.
 
 ### Marginal notes
 An entry's `note` renders in its own column as an italic aside under a `Note`
@@ -401,5 +431,8 @@ footnote and must not stack under the content at wide widths.
 - **Don't** put a kicker or eyebrow above a heading.
 - **Don't** let screen styling reach the printable copy. `/cv` loads only
   `print.css` and must stay flat, A4, and legible in monochrome.
+- **Don't** size a touch target by viewport width alone. Gate compact sizes on
+  `(pointer: coarse)`, or just leave them at 44px.
+- **Don't** set `preserve-3d` on an element containing `position: sticky`.
 - **Don't** add a second layout effect to `/cv` without re-checking print
   preview in both Chrome and Firefox.

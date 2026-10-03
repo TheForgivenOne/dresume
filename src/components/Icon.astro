@@ -7,7 +7,14 @@
  * the name in text than as a brand logo, and it keeps the stroke honest.
  */
 interface Props {
-  name: "sun" | "moon" | "arrow-up-right" | "arrow-right" | "mail" | "rosette";
+  name:
+    | "sun"
+    | "moon"
+    | "arrow-up-right"
+    | "arrow-right"
+    | "chevron"
+    | "mail"
+    | "rosette";
   class?: string;
   size?: number;
 }
@@ -19,6 +26,7 @@ const paths: Record<Props["name"], string> = {
   moon: "M20.4 13.7A8.4 8.4 0 0 1 10.3 3.6a8.4 8.4 0 1 0 10.1 10.1Z",
   "arrow-up-right": "M7.4 16.6 16.6 7.4M8.6 7.4h8v8",
   "arrow-right": "M4.4 12h15.2M13.6 6l6 6-6 6",
+  chevron: "M6 9.75 12 15.75 18 9.75",
   mail: "M3.4 6.6h17.2v10.8H3.4zM3.4 7.2 12 13l8.6-5.8",
   rosette: "M12 3.2 14 6l3.3-.5.4 3.3 2.9 1.7-1.7 2.9.5 3.3L16 15.8 12 18.6l-4-2.8-3.4.9-.5-3.3-1.7-2.9 2.9-1.7.4-3.3L10 6Z",
 };

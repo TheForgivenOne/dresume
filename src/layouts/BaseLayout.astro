@@ -32,7 +32,10 @@ const ogImage = new URL(withBase("/og.png"), Astro.site).href;
 <html lang="en" style={`--exam-ink: ${site.examinationInk}`}>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
 
     <title>{title}</title>
     <meta name="description" content={description} />
@@ -65,7 +68,7 @@ const ogImage = new URL(withBase("/og.png"), Astro.site).href;
       Skip to the record
     </a>
 
-    <div class="record-stage relative py-8 md:py-12">
+    <div class="record-stage relative py-0 md:py-12">
       <!-- The desk the record is lying on. -->
       <div
         class="record-ground layer-ground pointer-events-none fixed inset-0 -z-10"
@@ -76,12 +79,16 @@ const ogImage = new URL(withBase("/og.png"), Astro.site).href;
       <div class="record-sheet">
         <Header />
 
-        <main class="layer-content px-6 pt-10 md:px-14 md:pt-14">
-          <slot />
-        </main>
+        <!-- The header stays outside this element so it remains ordinary 2D
+             sticky; see the .record-sheet note in depth.css. -->
+        <div class="depth-stage">
+          <main class="layer-content px-6 pt-10 md:px-14 md:pt-14">
+            <slot />
+          </main>
 
-        <div class="layer-content px-6 md:px-14">
-          <Footer />
+          <div class="layer-content px-6 md:px-14">
+            <Footer />
+          </div>
         </div>
       </div>
     </div>

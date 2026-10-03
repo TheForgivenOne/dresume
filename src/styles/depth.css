@@ -39,7 +39,14 @@
   position: relative;
   width: min(1120px, 100% - 3rem);
   margin-inline: auto;
-  transform-style: preserve-3d;
+  /* Deliberately NOT preserve-3d.
+
+     A sticky element inside a preserve-3d context projects out of the viewport
+     as it pins, leaving a strip of desk showing above the header — and paint
+     order is decided by z-position rather than z-index, so `z-40` on the
+     header does nothing and scrolled content paints straight over the bar.
+     Keeping the sheet flat and nesting the depth in a child stage below leaves
+     the header as ordinary 2D sticky: correct pinning, correct stacking. */
   transition: transform 500ms var(--ease-settle);
   will-change: transform;
 
@@ -71,19 +78,31 @@
   }
 }
 
+/* The depth context for the record's body.
+
+   Its own stacking context, sitting below the header in normal flow, so the
+   header wins on stacking while the content still gains real depth from the
+   perspective on .record-stage above. */
+.depth-stage {
+  transform-style: preserve-3d;
+}
+
 /* Layer depths. Kept modest — beyond ~80px the perspective distortion reads
    as a gimmick rather than as paper lifted off a desk. */
 .layer-content {
   transform: translateZ(24px);
+  /* Must be preserve-3d or the seal's own lift inside it is flattened away and
+     the whole hero sits on one plane. */
+  transform-style: preserve-3d;
 }
+
 .layer-seal {
   transform: translateZ(64px);
   transform-style: preserve-3d;
 }
 
 /* Inside the sheet the ground layer has nothing to fall away from. */
-.layer-ground,
-.layer-sheet {
+.layer-ground {
   transform: none;
 }
 
@@ -202,7 +221,6 @@
   }
 
   .layer-ground,
-  .layer-sheet,
   .layer-content,
   .layer-seal {
     transform: none !important;
@@ -219,7 +237,6 @@
 
 @media print {
   .layer-ground,
-  .layer-sheet,
   .layer-content,
   .layer-seal {
     transform: none !important;

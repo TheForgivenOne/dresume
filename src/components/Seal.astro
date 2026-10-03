@@ -9,6 +9,11 @@ import { withBase } from "../lib/paths";
  * It states the mechanism in its own words: one source, two renderings. Pressing
  * it is the page's one authored motion — the emboss resolves to an inset, the
  * way a struck stamp sits into paper.
+ *
+ * Sized on `min(34vh, 66vw)` rather than `34vh` alone. At height-only the seal
+ * is 287px tall, which overflows a landscape phone — 390px of viewport height —
+ * and pushes the primary action off the screen. Bounding both axes keeps it
+ * whole at every orientation, from a 320px phone to a desktop.
  */
 interface Props {
   href: string;
@@ -16,33 +21,35 @@ interface Props {
 }
 
 const { href, label = "Certified copy" } = Astro.props;
+
+const size = "clamp(11rem, min(34vh, 66vw), 17.5rem)";
 ---
 
 <a
   href={withBase(href)}
-  class="seal group px-7 py-9 text-center"
-  style="width: clamp(13rem, 34vh, 17.5rem); height: clamp(13rem, 34vh, 17.5rem);"
+  class="seal group px-5 py-7 text-center sm:px-7 sm:py-9"
+  style={`width: ${size}; height: ${size};`}
   aria-label={`Open the ${label.toLowerCase()} — a printable A4 CV rendered from the same content as this page`}
 >
-  <span class="flex flex-col items-center gap-2">
+  <span class="flex flex-col items-center gap-1.5 sm:gap-2">
     <Icon
       name="rosette"
       size={20}
       class="text-carmine transition-transform duration-500 ease-settle group-hover:rotate-[18deg]"
     />
     <span
-      class="font-code text-[0.62rem] leading-[1.5] tracking-[0.2em] text-ink uppercase"
+      class="font-code text-[0.7rem] leading-[1.4] tracking-[0.16em] text-ink uppercase"
     >
       {label}
     </span>
     <span class="h-px w-8 bg-rule-strong"></span>
     <span
-      class="font-code text-[0.62rem] leading-[1.5] tracking-[0.12em] text-ink-subtle uppercase tabular"
+      class="font-code text-[0.7rem] leading-[1.4] tracking-[0.06em] text-ink-subtle uppercase tabular"
     >
       1 source<br />2 renderings
     </span>
     <span
-      class="mt-1 inline-flex items-center gap-1 font-code text-[0.62rem] tracking-[0.14em] text-ink-muted uppercase"
+      class="mt-1 inline-flex items-center gap-1 font-code text-[0.7rem] tracking-[0.1em] text-ink-muted uppercase"
     >
       Open
       <Icon name="arrow-right" size={12} />

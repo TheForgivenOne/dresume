@@ -9,6 +9,11 @@ import { skillGroups } from "../data/skills";
 /**
  * The navigation is computed from what actually exists. A section with no
  * entries has no link, and a link that goes nowhere is worse than no link.
+ *
+ * Desktop gets the links inline. Below `md` they collapse into a labelled
+ * disclosure in this same bar: a floating corner button was tried and rejected
+ * because it covered content, read as an ornament rather than as navigation,
+ * and sat exactly where a phone's home indicator lives.
  */
 const [experience, education, projects] = await Promise.all([
   getCollection("experience", ({ data }) => !data.draft),
@@ -30,21 +35,25 @@ const nav = [
   id="site-header"
   class="sticky top-0 z-40 border-b border-transparent transition-colors duration-300"
 >
-  <div class="flex items-center justify-between gap-6 px-6 py-3 md:px-14">
-    <a href="#record" class="flex items-baseline gap-3">
-      <span class="font-record text-lg leading-none">{site.name}</span>
-      <FieldLabel class="hidden sm:inline">{site.recordRef}</FieldLabel>
+  <div
+    class="flex items-center justify-between gap-4 px-6 py-2 md:px-14 md:py-3"
+  >
+    <a href="#record" class="flex min-h-11 items-baseline gap-3">
+      <span class="font-record text-lg leading-none whitespace-nowrap">
+        {site.name}
+      </span>
+      <FieldLabel class="hidden lg:inline">{site.recordRef}</FieldLabel>
     </a>
 
-    <div class="flex items-center gap-5">
-      <nav aria-label="Sections">
-        <ul class="hidden items-center gap-5 md:flex">
+    <div class="flex items-center gap-1.5 lg:gap-4">
+      <nav aria-label="Sections" class="hidden lg:block">
+        <ul class="flex items-center gap-5">
           {
             nav.map((item) => (
               <li>
                 <a
                   href={`#${item.id}`}
-                  class="font-code text-[0.62rem] tracking-[0.16em] text-ink-muted uppercase transition-colors hover:text-ink"
+                  class="flex min-h-11 items-center font-code text-[0.7rem] tracking-[0.1em] text-ink-muted uppercase transition-colors hover:text-ink"
                 >
                   {item.label}
                 </a>
@@ -54,56 +63,77 @@ const nav = [
         </ul>
       </nav>
 
+      <!-- 44px target: a finger, not a cursor. -->
+      <details id="sections-menu" class="group relative lg:hidden">
+        <summary
+          class="flex h-11 cursor-pointer list-none items-center gap-2 border border-rule px-3 font-code text-[0.7rem] tracking-[0.1em] text-ink-muted uppercase transition-colors hover:border-rule-strong hover:text-ink [&::-webkit-details-marker]:hidden"
+          aria-label="Open section navigation"
+        >
+          Sections
+          <Icon
+            name="chevron"
+            size={14}
+            class="transition-transform duration-200 group-open:rotate-180"
+          />
+        </summary>
+
+        <nav
+          aria-label="Sections"
+          class="absolute top-full right-0 mt-1 w-56 border border-rule bg-paper-raised p-1.5 shadow-[var(--shadow-lift)]"
+        >
+          <ul>
+            {
+              nav.map((item) => (
+                <li>
+                  <a
+                    href={`#${item.id}`}
+                    class="flex min-h-11 items-center justify-between gap-4 px-3 font-code text-[0.7rem] tracking-[0.1em] text-ink-muted uppercase transition-colors hover:bg-paper-sunken hover:text-ink"
+                  >
+                    {item.label}
+                    <Icon name="arrow-right" size={13} />
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+      </details>
+
       <ThemeToggle />
     </div>
   </div>
 </header>
 
-<!-- Section links do not fit beside the record on a phone; they open here. -->
-<details class="fixed right-4 bottom-4 z-40 md:hidden">
-  <summary
-    class="flex size-10 cursor-pointer list-none items-center justify-center rounded-full border border-rule-strong bg-paper-raised text-ink shadow-[var(--shadow-lift)]"
-    aria-label="Open section navigation"
-  >
-    <span class="block h-px w-4 bg-current" />
-  </summary>
-  <nav
-    aria-label="Sections"
-    class="mt-2 min-w-40 rounded-sm border border-rule bg-paper-raised p-3 shadow-[var(--shadow-lift)]"
-  >
-    <ul class="space-y-1">
-      {
-        nav.map((item) => (
-          <li>
-            <a
-              href={`#${item.id}`}
-              class="flex items-center justify-between gap-4 py-1.5 font-code text-[0.62rem] tracking-[0.14em] text-ink-muted uppercase"
-            >
-              {item.label}
-              <Icon name="arrow-right" size={12} />
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-  </nav>
-</details>
-
 <script>
   const header = document.getElementById("site-header");
+  const menu = document.getElementById("sections-menu") as HTMLDetailsElement | null;
 
   const onScroll = () => {
     const past = window.scrollY > 24;
     header?.classList.toggle("border-rule", past);
-    header?.classList.toggle("bg-paper-raised/85", past);
+    header?.classList.toggle("bg-paper-raised/92", past);
     header?.classList.toggle("backdrop-blur-sm", past);
   };
 
   onScroll();
   addEventListener("scroll", onScroll, { passive: true });
 
-  // Close the phone menu when a section is chosen.
-  document.querySelectorAll("details a[href^='#']").forEach((a) =>
-    a.addEventListener("click", () => a.closest("details")?.removeAttribute("open")),
+  // Choosing a section dismisses the menu; so do Escape and a click outside it.
+  // A disclosure left open behind a scrolled page is a trap with no way out.
+  menu?.querySelectorAll("a").forEach((a) =>
+    a.addEventListener("click", () => menu.removeAttribute("open")),
   );
+
+  addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && menu?.open) {
+      menu.removeAttribute("open");
+      menu.querySelector("summary")?.focus();
+    }
+  });
+
+  addEventListener("click", (e) => {
+    if (!menu?.open) return;
+    const target = e.target as Node;
+    if (!menu.contains(target)) menu.removeAttribute("open");
+  });
 </script>

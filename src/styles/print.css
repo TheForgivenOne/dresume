@@ -28,6 +28,12 @@
 }
 
 /* Identity block, ruled like the head of a transcript. */
+/* Identity block, ruled like the head of a transcript.
+
+   On paper the two columns hold their proportions and the print rules take
+   over. On a phone this has to stack instead: the A4 width does not exist, and
+   a two-column header forces the name to break mid-word while the contact
+   details sit in a narrow ribbon beside it. */
 .cv-head {
   display: grid;
   grid-template-columns: 1fr auto;
@@ -176,8 +182,10 @@
   right: 1rem;
   z-index: 10;
   font-family: "Azeret Mono", ui-monospace, monospace;
-  font-size: 0.62rem;
-  letter-spacing: 0.16em;
+  /* Screen-only affordance (removed at print), so it takes the screen label
+     step rather than the print ramp it sits beside. */
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   padding: 0.6rem 1rem;
   background: var(--cv-ink);
@@ -255,5 +263,57 @@
     width: auto;
     margin: 0;
     box-shadow: none;
+  }
+}
+
+/* A4 has no meaning on a phone, so the page reflows to the screen instead of
+   pretending to be paper. Below `print` only — the print rules above still win
+   on paper, which is the copy that matters. */
+@media screen and (max-width: 640px) {
+  .cv {
+    --cv-pad: 20px;
+    font-size: 11pt;
+  }
+
+  .cv-sheet {
+    padding: 20px;
+  }
+
+  /* Stack the identity block and let it breathe. */
+  .cv-head {
+    grid-template-columns: 1fr;
+    align-items: start;
+    gap: 0.6rem;
+  }
+
+  .cv-name {
+    font-size: 22pt;
+  }
+
+  /* Left-aligned and full width, no longer a squeezed right-hand ribbon. */
+  .cv-contact {
+    text-align: left;
+    font-size: 8pt;
+    line-height: 1.6;
+  }
+
+  /* An entry title and its dates cannot share a line at this width. */
+  .cv-entry-head {
+    grid-template-columns: 1fr;
+    gap: 0.1rem;
+  }
+
+  .cv-two-col {
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+  }
+
+  /* A 44px target for the one control on the page. */
+  .cv-print-btn {
+    position: static;
+    display: block;
+    width: 100%;
+    min-height: 44px;
+    font-size: 0.7rem;
   }
 }

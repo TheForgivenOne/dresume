@@ -17,14 +17,27 @@ const { title } = Astro.props;
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
     <title>{title}</title>
     <meta name="robots" content="noindex" />
     <meta name="description" content={`Printable CV — ${title}`} />
   </head>
 
-  <body class="cv">
-    <button type="button" class="cv-print-btn" onclick="window.print()">
+  <body
+    class="cv"
+    style="padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right);"
+  >
+    <!-- Clear of the notch on a phone; becomes a full-width bar below `sm`
+         and a floating control on larger screens (see print.css). -->
+    <button
+      type="button"
+      class="cv-print-btn"
+      style="top: max(1rem, env(safe-area-inset-top)); right: max(1rem, env(safe-area-inset-right));"
+      onclick="window.print()"
+    >
       Save as PDF
     </button>
 

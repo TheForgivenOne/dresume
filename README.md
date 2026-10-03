@@ -101,6 +101,27 @@ bun run check      # type check
 node scripts/make-og.mjs   # regenerate the link-preview card from site.ts
 ```
 
+### Checks
+
+The mobile and legibility floors are measured in a real browser rather than
+eyeballed, because a screenshot cannot tell you a tap target is 36px or a label
+is 9.9px. Start the preview server, then:
+
+```sh
+node scripts/probe-responsive.mjs http://127.0.0.1:4321/dresume/
+node scripts/probe-contrast.mjs    http://127.0.0.1:4321/dresume/ light
+node scripts/probe-menu.mjs        http://127.0.0.1:4321/dresume/
+```
+
+`probe-responsive` walks nine device widths and asserts no overflow, body copy
+at 16px, labels at 11px, and 44px touch targets. `probe-contrast` composites
+the real backdrop behind every text node and reports anything under WCAG AA in
+either theme. `probe-menu` drives the mobile section disclosure through the
+DevTools protocol to check it opens, is opaque, meets 44px, and dismisses on
+select, Escape, and an outside tap.
+
+All three need only Chromium; there is no test dependency.
+
 The dev server serves at **`/dresume/`**, not `/`. That is the GitHub Pages
 base path and it applies locally too.
 

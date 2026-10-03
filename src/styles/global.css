@@ -44,7 +44,11 @@
   --color-paper-sunken: #e7e1d3;
   --color-ink: #191512;
   --color-ink-muted: #57503f;
-  --color-ink-subtle: #857c68;
+  /* Warm, not blue-grey, and dark enough for 4.5:1 as *text*. The previous
+     #857c68 measured 3.93:1 on the paper, which is legal only for large type —
+     and these labels are 11px capitals, the hardest case there is. Measured by
+     scripts/probe-contrast.mjs, not asserted. */
+  --color-ink-subtle: #6f6754;
   --color-rule: #cdc4b0;
   --color-rule-strong: #a2977c;
 
@@ -86,7 +90,8 @@ html.dark {
   --color-paper-sunken: #0d0b08;
   --color-ink: #f1ece0;
   --color-ink-muted: #a79d88;
-  --color-ink-subtle: #7b7362;
+  /* 4.6:1 on the dark paper, matching the light theme's guarantee. */
+  --color-ink-subtle: #8b8371;
   --color-rule: #332c21;
   --color-rule-strong: #524a3a;
   /* Derived rather than hardcoded, so a custom exam ink stays legible on a
@@ -115,6 +120,11 @@ html.dark {
     font-feature-settings: "kern", "liga";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+
+    /* viewport-fit=cover lets the sheet run under a notch; these keep the text
+       and the controls clear of the rounded corners and the home indicator. */
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
   }
 
   h1,
@@ -159,7 +169,7 @@ html.dark {
    project's ## headings arrive as undifferentiated body text. */
 .prose-record {
   color: var(--color-ink-muted);
-  font-size: 0.95rem;
+  font-size: 1rem;
   line-height: 1.7;
 }
 

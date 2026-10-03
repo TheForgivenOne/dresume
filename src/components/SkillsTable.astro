@@ -12,14 +12,14 @@ import { SCALE, skillGroups } from "../data/skills";
   {
     skillGroups.map((group) => (
       <div>
-        <h3 class="mb-3 border-b border-rule pb-1.5 font-code text-[0.62rem] tracking-[0.18em] text-ink-subtle uppercase">
+        <h3 class="mb-3 border-b border-rule pb-1.5 font-code text-[0.7rem] tracking-[0.18em] text-ink-subtle uppercase">
           {group.group}
         </h3>
 
         <ul>
           {group.skills.map((skill) => (
             <li class="flex items-center justify-between gap-4 border-b border-dotted border-rule py-1.5">
-              <span class="text-[0.95rem] text-ink-muted">{skill.name}</span>
+              <span class="text-[1rem] text-ink-muted">{skill.name}</span>
 
               <span class="flex items-center gap-1.5">
                 <span class="flex gap-[3px]" aria-hidden="true">
@@ -47,6 +47,6 @@ import { SCALE, skillGroups } from "../data/skills";
   }
 </div>
 
-<p class="mt-5 font-code text-[0.62rem] tracking-[0.14em] text-ink-subtle uppercase">
+<p class="mt-5 font-code text-[0.7rem] tracking-[0.14em] text-ink-subtle uppercase">
   Self-reported · {SCALE} denotes day-to-day fluency
 </p>

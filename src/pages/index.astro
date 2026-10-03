@@ -52,7 +52,9 @@ const totals = [
 <BaseLayout>
   <!-- ============================================================ IDENTITY -->
   <section id="record" class="scroll-mt-28">
-    <div class="grid grid-cols-1 gap-x-14 gap-y-14 lg:grid-cols-[1fr_auto] lg:items-start">
+    <div
+      class="grid grid-cols-1 gap-x-14 gap-y-10 lg:grid-cols-[1fr_auto] lg:items-start lg:gap-y-14"
+    >
       <div>
         <h1
           class="font-record text-[clamp(3.2rem,11vw,6rem)] leading-[0.92] tracking-[-0.02em]"
@@ -64,13 +66,13 @@ const totals = [
         <div
           class="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-rule-strong pt-4"
         >
-          <span class="text-[0.95rem] font-medium text-ink">{site.title}</span>
-          <span class="font-code text-[0.62rem] tracking-[0.1em] text-ink-subtle uppercase">
+          <span class="text-[1rem] font-medium text-ink">{site.title}</span>
+          <span class="font-code text-[0.7rem] tracking-[0.1em] text-ink-subtle uppercase">
             {site.location}
           </span>
           {
             site.availability && (
-              <span class="inline-flex items-center gap-2 font-code text-[0.62rem] tracking-[0.14em] text-ink-muted uppercase">
+              <span class="inline-flex items-center gap-2 font-code text-[0.7rem] tracking-[0.14em] text-ink-muted uppercase">
                 <span class="under-examination size-[0.4rem]" aria-hidden="true" />
                 {site.availability}
               </span>
@@ -102,7 +104,7 @@ const totals = [
               <FieldLabel>Record contains</FieldLabel>
               <ul class="mt-2.5 space-y-1">
                 {totals.map((t) => (
-                  <li class="font-code text-[0.62rem] tracking-[0.06em] text-ink-muted tabular">
+                  <li class="font-code text-[0.7rem] tracking-[0.06em] text-ink-muted tabular">
                     {t}
                   </li>
                 ))}
@@ -120,7 +122,7 @@ const totals = [
   <section class="pt-16">
     <SectionHead id="about" title="The record" />
     <div class="max-w-[68ch] space-y-4">
-      {site.bio.map((para) => <p class="text-[0.95rem] leading-relaxed text-ink-muted">{para}</p>)}
+      {site.bio.map((para) => <p class="text-[1rem] leading-relaxed text-ink-muted">{para}</p>)}
     </div>
   </section>
 
@@ -226,7 +228,7 @@ const totals = [
 
         <a
           href={`mailto:${site.email}`}
-          class="mt-6 inline-flex items-center gap-2.5 border-b border-rule-strong pb-1 font-record text-[1.5rem] transition-colors hover:border-ink"
+          class="mt-6 inline-flex max-w-full items-center gap-2.5 border-b border-rule-strong pb-1 font-record text-[1.5rem] break-words transition-colors hover:border-ink"
         >
           <Icon name="mail" size={18} class="text-ink-subtle" />
           {site.email}
@@ -241,7 +243,7 @@ const totals = [
                     href={url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="inline-flex items-center gap-1.5 font-code text-[0.62rem] tracking-[0.14em] text-ink-muted uppercase underline decoration-rule underline-offset-[0.24em] transition-colors hover:text-ink hover:decoration-ink"
+                    class="inline-flex items-center gap-1.5 font-code text-[0.7rem] tracking-[0.14em] text-ink-muted uppercase underline decoration-rule underline-offset-[0.24em] transition-colors hover:text-ink hover:decoration-ink"
                   >
                     {label}
                     <Icon name="arrow-up-right" size={12} />
