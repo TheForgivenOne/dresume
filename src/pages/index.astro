@@ -47,6 +47,25 @@ const totals = [
   studies.length && `${studies.length} ${studies.length === 1 ? "qualification" : "qualifications"}`,
   works.length && `${works.length} ${works.length === 1 ? "project" : "projects"}`,
 ].filter(Boolean);
+
+/* ---------------------------------------------------------------------------
+   THE SPINE
+   Each division names the question it settles, so the page argues rather than
+   lists. The order is the argument: who you are, what you can do, where you
+   did it, what you made, and how to reach you. A reader who stops after the
+   first three sections still has the whole claim.
+   --------------------------------------------------------------------------- */
+const spine = {
+  record: "Where the practice came from, and what it is actually good at.",
+  experience:
+    "The appointments, most recent first — scope, and what changed because of it.",
+  projects:
+    "Things built rather than described. Each entry opens to the problem, the trade-off, and the outcome.",
+  skills:
+    "The working surface. Ratings are self-reported and the scale is stated once.",
+  education: "Formal qualifications, for the roles that ask for them.",
+  contact: "One address, and a printable copy of everything above.",
+};
 ---
 
 <BaseLayout>
@@ -70,17 +89,26 @@ const totals = [
           <span class="font-code text-[0.7rem] tracking-[0.1em] text-ink-subtle uppercase">
             {site.location}
           </span>
+          {/* Availability carries the reserved ink, so it reads as a fact on the
+              record rather than as a status pill. It is the one thing on this
+              baseline a reader might act on, which is what earns the colour —
+              and it disappears entirely when there is nothing true to say. */}
           {
             site.availability && (
-              <span class="inline-flex items-center gap-2 font-code text-[0.7rem] tracking-[0.14em] text-ink-muted uppercase">
+              <span class="inline-flex items-center gap-2 font-code text-[0.7rem] tracking-[0.1em] text-ink uppercase">
                 <span class="under-examination size-[0.4rem]" aria-hidden="true" />
-                {site.availability}
+                {site.availability.status}
               </span>
             )
           }
         </div>
 
-        <p class="mt-8 max-w-[52ch] text-[1.05rem] leading-relaxed text-ink-muted">
+        {/* Fluid rather than a fixed 1.05rem. The tagline is the one line a screener
+            reads at 11.2px when the OS bumps text size, so it must not be the
+            one block that stays put while everything around it grows. */}
+        <p
+          class="mt-8 max-w-[52ch] text-[clamp(1.05rem,0.95rem+0.4vw,1.35rem)] leading-relaxed text-ink-muted"
+        >
           {site.tagline}
         </p>
 
@@ -120,7 +148,7 @@ const totals = [
 
   <!-- ================================================================ ABOUT -->
   <section class="pt-16">
-    <SectionHead id="about" title="The record" />
+    <SectionHead id="about" title="The record" lede={spine.record} />
     <div class="max-w-[68ch] space-y-4">
       {site.bio.map((para) => <p class="text-[1rem] leading-relaxed text-ink-muted">{para}</p>)}
     </div>
@@ -134,6 +162,7 @@ const totals = [
           id="experience"
           title="Experience"
           meta={`${jobs.length} recorded`}
+          lede={spine.experience}
         />
         <div>
           {jobs.map((job) => (
@@ -155,6 +184,37 @@ const totals = [
     )
   }
 
+  <!-- ============================================================= PROJECTS -->
+  {/* Evidence of the work sits immediately after the appointments that produced
+      it. Education and skills are supporting detail, so they follow. */}
+  {
+    works.length > 0 && (
+      <section class="pt-20">
+        <SectionHead
+          id="projects"
+          title="Projects"
+          meta={`${works.length} recorded`}
+          lede={spine.projects}
+        />
+        <div>
+          {works.map((project, i) => (
+            <ProjectRow project={project} index={i} />
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  <!-- =============================================================== SKILLS -->
+  {
+    skillGroups.length > 0 && (
+      <section class="pt-20">
+        <SectionHead id="skills" title="Skills" lede={spine.skills} />
+        <SkillsTable />
+      </section>
+    )
+  }
+
   <!-- ============================================================ EDUCATION -->
   {
     studies.length > 0 && (
@@ -163,6 +223,7 @@ const totals = [
           id="education"
           title="Education"
           meta={`${studies.length} recorded`}
+          lede={spine.education}
         />
         <div>
           {studies.map((item) => (
@@ -183,48 +244,29 @@ const totals = [
     )
   }
 
-  <!-- =============================================================== SKILLS -->
-  {
-    skillGroups.length > 0 && (
-      <section class="pt-20">
-        <SectionHead id="skills" title="Skills" />
-        <SkillsTable />
-      </section>
-    )
-  }
-
-  <!-- ============================================================= PROJECTS -->
-  {
-    works.length > 0 && (
-      <section class="pt-20">
-        <SectionHead
-          id="projects"
-          title="Projects"
-          meta={`${works.length} recorded`}
-        />
-        <div>
-          {works.map((project, i) => (
-            <ProjectRow project={project} index={i} />
-          ))}
-        </div>
-      </section>
-    )
-  }
-
   <!-- ============================================================== CONTACT -->
   <section id="contact" class="scroll-mt-28 pt-20">
-    <SectionHead id="contact-title" title="Contact" />
+    <SectionHead id="contact-title" title="Contact" lede={spine.contact} />
 
     <div class="grid grid-cols-1 gap-10 md:grid-cols-[1fr_auto] md:items-end">
       <div class="max-w-[52ch]">
-        <FieldLabel>Open to</FieldLabel>
-        <p class="mt-2 text-[1.05rem] leading-relaxed text-ink-muted">
-          {
-            site.availability
-              ? `Currently ${site.availability.toLowerCase()}. The quickest route is email; the seal above is a printable copy of this record.`
-              : "The quickest route is email."
-          }
-        </p>
+        {
+          site.availability ? (
+            <>
+              <FieldLabel>Open to</FieldLabel>
+              <p class="mt-2 text-[1.05rem] leading-relaxed text-ink-muted">
+                {site.availability.detail ?? site.availability.status}. The
+                quickest route is email; the seal above is a printable copy of
+                this record.
+              </p>
+            </>
+          ) : (
+            <p class="text-[1.05rem] leading-relaxed text-ink-muted">
+              The quickest route is email; the seal above is a printable copy of
+              this record.
+            </p>
+          )
+        }
 
         <a
           href={`mailto:${site.email}`}

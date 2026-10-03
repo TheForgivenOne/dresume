@@ -21,12 +21,15 @@ const [experience, education, projects] = await Promise.all([
   getCollection("projects", ({ data }) => !data.draft),
 ]);
 
+// The order matches the page's argument, not the order the collections happen
+// to sit in: who you are, what you did, what you built, what you work with,
+// what you studied, how to reach you.
 const nav = [
   { id: "record", label: "Record", ready: true },
   { id: "experience", label: "Experience", ready: experience.length > 0 },
-  { id: "education", label: "Education", ready: education.length > 0 },
-  { id: "skills", label: "Skills", ready: skillGroups.length > 0 },
   { id: "projects", label: "Projects", ready: projects.length > 0 },
+  { id: "skills", label: "Skills", ready: skillGroups.length > 0 },
+  { id: "education", label: "Education", ready: education.length > 0 },
   { id: "contact", label: "Contact", ready: true },
 ].filter((item) => item.ready);
 ---
@@ -42,7 +45,11 @@ const nav = [
       <span class="font-record text-lg leading-none whitespace-nowrap">
         {site.name}
       </span>
-      <FieldLabel class="hidden lg:inline">{site.recordRef}</FieldLabel>
+      {
+        site.recordRef && (
+          <FieldLabel class="hidden lg:inline">{site.recordRef}</FieldLabel>
+        )
+      }
     </a>
 
     <div class="flex items-center gap-1.5 lg:gap-4">

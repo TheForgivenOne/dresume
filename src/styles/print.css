@@ -18,6 +18,34 @@
   background: #eceae4;
 }
 
+/* The same record under low light, on screen only.
+   The copy is most often opened from a phone, and a reader who prefers dark
+   should not get a white sheet in a dark room. Every value here is pinned for
+   paper: the @media print block below resets them to true white and true black,
+   because a warm cast on real paper reads as a rendering fault. */
+html.dark .cv {
+  --cv-ink: #f1ece0;
+  --cv-muted: #a79d88;
+  --cv-rule: #4a4335;
+  --cv-carmine: #e0828f;
+
+  background: #0d0b08;
+}
+
+html.dark .cv-sheet {
+  background: #16130f;
+  box-shadow: 0 2px 22px rgb(0 0 0 / 0.5);
+}
+
+html.dark .cv-print-btn {
+  background: #f1ece0;
+  color: #16130f;
+}
+
+html.dark .cv-print-btn:hover {
+  background: #fff;
+}
+
 .cv-sheet {
   width: 210mm;
   min-height: 297mm;
@@ -209,9 +237,24 @@
     background: #fff;
   }
 
-  .cv {
+  /* Reset the dark theme. The screen dark rules are unlayered, so an explicit
+     print block with equal-or-greater specificity outranks them regardless of
+     source order — otherwise a dark-mode reader prints a cream sheet. */
+  .cv,
+  html.dark .cv {
+    --cv-ink: #16130f;
+    --cv-muted: #4a4438;
+    --cv-rule: #b8ae99;
+    --cv-carmine: #9d2135;
+
     background: #fff;
+    color: var(--cv-ink);
     font-size: 10.2pt;
+  }
+
+  html.dark .cv-sheet {
+    background: #fff;
+    box-shadow: none;
   }
 
   .cv-print-btn {

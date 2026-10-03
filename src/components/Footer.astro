@@ -13,9 +13,11 @@ import { site } from "../data/site";
     <div>
       <FieldLabel>Record</FieldLabel>
       <p class="mt-2 font-record text-xl leading-tight">{site.name}</p>
-      <p class="mt-1 font-code text-[0.7rem] tracking-[0.1em] text-ink-subtle">
-        {site.recordRef}
-      </p>
+      {site.recordRef && (
+        <p class="mt-1 font-code text-[0.7rem] tracking-[0.1em] text-ink-subtle">
+          {site.recordRef}
+        </p>
+      )}
     </div>
 
     <div class="flex items-center gap-6">

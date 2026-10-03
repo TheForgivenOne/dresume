@@ -3,7 +3,7 @@ import CVLayout from "../layouts/CVLayout.astro";
 import { getCollection } from "astro:content";
 import { site } from "../data/site";
 import { skillGroups } from "../data/skills";
-import { formatRange, yearsBetween } from "../lib/date";
+import { formatDuration, formatRange } from "../lib/date";
 
 /**
  * The certified copy. Rendered from the same collections as the screen record,
@@ -69,7 +69,7 @@ const orderedEducation = [...education].sort(
             </div>
 
             <p class="cv-org">
-              {[job.data.location, `${yearsBetween(job.data.start, job.data.end)} yrs`]
+              {[job.data.location, formatDuration(job.data.start, job.data.end)]
                 .filter(Boolean)
                 .join(" · ")}
             </p>

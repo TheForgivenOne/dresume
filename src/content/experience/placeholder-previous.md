@@ -4,9 +4,9 @@ organisation: "PLACEHOLDER Organisation"
 location: "PLACEHOLDER City"
 start: 2021-06
 end: 2024-02
-summary: "PLACEHOLDER — what you owned and what it was for."
+summary: "PLACEHOLDER summary — scope and purpose of the role."
 highlights:
-  - "PLACEHOLDER outcome with a number."
+  - "PLACEHOLDER highlight — outcome, with a figure."
   - "PLACEHOLDER outcome."
 tags: ["PLACEHOLDER tech"]
 note: "PLACEHOLDER marginal note."

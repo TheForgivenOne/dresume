@@ -110,17 +110,35 @@ is 9.9px. Start the preview server, then:
 ```sh
 node scripts/probe-responsive.mjs http://127.0.0.1:4321/dresume/
 node scripts/probe-contrast.mjs    http://127.0.0.1:4321/dresume/ light
+node scripts/probe-occlusion.mjs   http://127.0.0.1:4321/dresume/
 node scripts/probe-menu.mjs        http://127.0.0.1:4321/dresume/
+node scripts/probe-type.mjs        http://127.0.0.1:4321/dresume/
+node scripts/probe-zoom.mjs        http://127.0.0.1:4321/dresume/ 2
 ```
 
 `probe-responsive` walks nine device widths and asserts no overflow, body copy
 at 16px, labels at 11px, and 44px touch targets. `probe-contrast` composites
 the real backdrop behind every text node and reports anything under WCAG AA in
-either theme. `probe-menu` drives the mobile section disclosure through the
-DevTools protocol to check it opens, is opaque, meets 44px, and dismisses on
-select, Escape, and an outside tap.
+either theme. `probe-occlusion` taps every control at its own centre and asks
+the browser what actually receives the tap — a 44px box still unclickable if
+something covers it. `probe-menu` drives the mobile disclosure through the
+DevTools protocol. `probe-type` reports the display size, body measure and
+label tracking per width. `probe-zoom` re-runs at 200% OS text, which is where
+fixed rem sizes collide.
 
-All three need only Chromium; there is no test dependency.
+All need only Chromium; there is no test dependency.
+
+### Assets
+
+```sh
+node scripts/make-icons.mjs   # favicon, PWA icons, apple-touch, mask-icon, manifest
+node scripts/make-og.mjs      # the 1200x630 link-preview card
+```
+
+Both read their colours and identity out of `src/styles/global.css` and
+`src/data/site.ts`, so the mark cannot drift from the site. Run them after
+changing either. `make-icons` writes a real `favicon.ico` (16/32/48) alongside
+the scalable SVG.
 
 The dev server serves at **`/dresume/`**, not `/`. That is the GitHub Pages
 base path and it applies locally too.
@@ -187,7 +205,11 @@ src/
     global.css          tokens, dark theme, prose
     depth.css           the 3D sheet and the seal
     print.css           A4 output
-scripts/make-og.mjs     regenerates public/og.png
+scripts/
+  make-og.mjs         regenerates public/og.png from site.ts
+  make-icons.mjs      regenerates the whole icon set from the tokens
+  bump-type-floor.py  one-off: raised the type floor for touch
+  probe-*.mjs         browser-driven checks (see above)
 ```
 
 `PRODUCT.md` holds the product truth — who this is for and what it may not

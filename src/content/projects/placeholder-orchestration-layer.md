@@ -1,6 +1,6 @@
 ---
 title: "PLACEHOLDER Project — orchestration layer"
-summary: "PLACEHOLDER — one sentence on what it is and why it mattered."
+summary: "PLACEHOLDER summary — what this is and why it mattered."
 year: "2024"
 tags: ["PLACEHOLDER tech"]
 links:

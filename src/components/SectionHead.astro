@@ -8,18 +8,36 @@ interface Props {
   title: string;
   /** Right-hand column note, e.g. a count. Optional. */
   meta?: string;
+  /**
+   * One sentence telling the reader what this division will answer for them.
+   * This is the page's narrative spine: each section earns the next by naming
+   * the question it settles. Omit it and the section speaks for itself.
+   */
+  lede?: string;
 }
 
-const { id, title, meta } = Astro.props;
+const { id, title, meta, lede } = Astro.props;
 ---
 
-<div class="mb-8 flex items-baseline justify-between gap-6 border-b border-rule-strong pb-2">
-  <h2 id={id} class="scroll-mt-28 font-record text-[1.75rem] leading-none">
-    {title}
-  </h2>
-  {meta && (
-    <span class="font-code text-[0.7rem] tracking-[0.18em] text-ink-subtle uppercase tabular">
-      {meta}
-    </span>
-  )}
+<div class="mb-8 border-b border-rule-strong pb-2">
+  <div class="flex items-baseline justify-between gap-6">
+    <h2 id={id} class="scroll-mt-28 font-record text-[1.75rem] leading-none">
+      {title}
+    </h2>
+    {
+      meta && (
+        <span class="font-code text-[0.7rem] tracking-[0.18em] text-ink-subtle uppercase tabular">
+          {meta}
+        </span>
+      )
+    }
+  </div>
+
+  {
+    lede && (
+      <p class="mt-3 max-w-[62ch] text-[1rem] leading-relaxed text-ink-muted">
+        {lede}
+      </p>
+    )
+  }
 </div>

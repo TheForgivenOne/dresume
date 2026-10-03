@@ -3,8 +3,13 @@
  *
  * Everything below is PLACEHOLDER — no real employment history, education,
  * metrics, or links have been supplied yet. Replace every value marked
- * `PLACEHOLDER` before publishing. Nothing in this file may be invented:
- * a claim that is not true is a liability, a placeholder is merely unfinished.
+ * `PLACEHOLDER` before publishing. Nothing here may be invented: a claim that
+ * is not true is a liability, a placeholder is merely unfinished.
+ *
+ * Optional fields are typed `| null` and default to null. An optional field that
+ * is set to a placeholder string is worse than an absent one, because it renders
+ * a value with nothing behind it — a dot beside "Open to new work", a reference
+ * code reading 0000/0000. Until there is something true to say, leave them null.
  */
 
 export interface SocialLinks {
@@ -13,6 +18,19 @@ export interface SocialLinks {
   x?: string;
   /** Optional personal site, shown if present. */
   website?: string;
+}
+
+/**
+ * Availability, if you are open to work. Null hides it entirely.
+ *
+ * `detail` is what makes the badge worth the space: a bare status is a label a
+ * reader cannot act on. Give it a role, a location, or a date.
+ */
+export interface Availability {
+  /** The one-line claim, e.g. "Open to new work". */
+  status: string;
+  /** What is actually wanted, e.g. "Senior agentic tooling, remote or EU". */
+  detail?: string;
 }
 
 export const site = {
@@ -28,15 +46,18 @@ export const site = {
 
   /** PLACEHOLDER */
   bio: [
-    "Two or three sentences on where you have been and what you are good at. This paragraph is the one piece of prose a reader is likely to finish, so make it count rather than listing everything.",
-    "A second sentence that gives the reader a reason to trust the claims above it — scale, a hard problem you solved, or a thing you shipped that people actually use.",
+    "PLACEHOLDER summary — the paragraph a screener reads first.",
+    "PLACEHOLDER summary — a second paragraph carrying evidence for the claim above.",
   ],
 
   /** PLACEHOLDER */
   location: "City, Country",
 
-  /** PLACEHOLDER — set to null to hide the badge entirely. */
-  availability: "Open to new work",
+  /** PLACEHOLDER — set to null until there is something true to put in it. */
+  availability: {
+    status: "PLACEHOLDER availability",
+    detail: undefined,
+  } satisfies Availability,
 
   /** PLACEHOLDER */
   email: "you@example.com",
@@ -56,10 +77,10 @@ export const site = {
   examinationInk: "#9d2135",
 
   /**
-   * A reference code for the record, printed in the footer. PLACEHOLDER.
-   * Purely presentational — do not imply it is a real registration number.
+   * Optional reference code, printed in the header and footer. Null hides it —
+   * an unset code that still renders is a counter with nothing behind it.
    */
-  recordRef: "REC · 0000/0000",
+  recordRef: null,
 } as const;
 
 /** Social links that actually have a value, in display order. */

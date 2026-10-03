@@ -35,15 +35,43 @@ export const formatYears = (start: Date, end?: Date | null): string => {
 };
 
 /**
- * Whole years between two dates, rounded down, never negative. An open-ended
- * range runs to today.
+ * Whole months between two dates, never negative. An open-ended range runs to
+ * today.
  */
-export const yearsBetween = (start: Date, end?: Date | null): number => {
+export const monthsBetween = (start: Date, end?: Date | null): number => {
   const to = end ?? new Date();
   const months =
     (to.getUTCFullYear() - start.getUTCFullYear()) * 12 +
     (to.getUTCMonth() - start.getUTCMonth());
-  return Math.max(0, Math.floor(months / 12));
+  return Math.max(0, months);
+};
+
+/** Whole years between two dates, rounded down, never negative. */
+export const yearsBetween = (start: Date, end?: Date | null): number =>
+  Math.floor(monthsBetween(start, end) / 12);
+
+/**
+ * A duration a reader can act on, or null when there is nothing true to say.
+ *
+ * Rounding a sub-year span down to "0 yrs" is not a measurement — it is a
+ * layout failure printed as a fact. A certification earned in a single month
+ * is a month, not zero years, so short spans are reported in months. Returns
+ * null for a zero-length span, because "0 months" tells a reader nothing and
+ * the range beside it already carries the truth.
+ */
+export const formatDuration = (
+  start: Date,
+  end?: Date | null,
+): string | null => {
+  const months = monthsBetween(start, end);
+  if (months <= 0) return null;
+
+  const years = Math.floor(months / 12);
+  const rest = months % 12;
+
+  if (years === 0) return `${months} ${months === 1 ? "month" : "months"}`;
+  if (rest === 0) return `${years} ${years === 1 ? "year" : "years"}`;
+  return `${years}y ${rest}m`;
 };
 
 /** Machine-readable value for a <time> element. */

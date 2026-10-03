@@ -30,13 +30,36 @@ jobs:
       - name: Type check
         run: bunx astro check
 
-      - name: Regenerate the social card
-        # Must run before the build: the card lives in public/, which the build
-        # copies into dist/. Regenerating afterwards would change nothing served.
-        run: node scripts/make-og.mjs
+      - name: Regenerate assets
+        # Both read their values from site.ts and the stylesheet, so they must
+        # run *before* the build: they write into public/, which the build then
+        # copies into dist/. Running them afterwards would change nothing served.
+        run: |
+          node scripts/make-icons.mjs
+          node scripts/make-og.mjs
 
       - name: Build
         run: bun run build
+
+      # Browser-driven checks. Chromium is already on the runner, so these cost
+      # nothing. The preview server serves the site under its own base path.
+      - name: Check — a11y, layout and touch
+        run: |
+          bunx astro preview --port 4321 &
+          npx --yes wait-on http://127.0.0.1:4321/dresume/ --timeout 60000
+          node scripts/probe-contrast.mjs http://127.0.0.1:4321/dresume/ light
+          node scripts/probe-contrast.mjs http://127.0.0.1:4321/dresume/ dark
+          node scripts/probe-responsive.mjs http://127.0.0.1:4321/dresume/
+          node scripts/probe-occlusion.mjs http://127.0.0.1:4321/dresume/
+          node scripts/probe-menu.mjs http://127.0.0.1:4321/dresume/
+          node scripts/probe-zoom.mjs http://127.0.0.1:4321/dresume/ 2
+          bunx astro preview stop
+
+      # Reports without failing, so placeholder content can still be deployed
+      # from a branch. Flip this to `--strict` once site.ts holds real identity —
+      # that is the moment the site becomes publishable rather than a preview.
+      - name: Check — content gate (advisory)
+        run: node scripts/probe-content.mjs
 
       - uses: actions/configure-pages@v5
 

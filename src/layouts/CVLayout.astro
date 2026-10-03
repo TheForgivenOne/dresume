@@ -1,10 +1,17 @@
 ---
 import "../styles/print.css";
+import { withBase } from "../lib/paths";
 
 /**
  * The certified copy. A deliberately separate renderer rather than a print
  * stylesheet over the screen layout: this page never loads the depth or theme
  * stylesheets, so no screen styling can reach the paper.
+ *
+ * The one thing it does share is the theme, applied before first paint. This is
+ * the page most likely to be opened immediately before a screen call, and a
+ * reader who prefers dark getting a white flash is the first impression of the
+ * document itself. Print output is unaffected — `print.css` pins its own
+ * white ground and true-black ink.
  */
 interface Props {
   title: string;
@@ -24,6 +31,24 @@ const { title } = Astro.props;
     <title>{title}</title>
     <meta name="robots" content="noindex" />
     <meta name="description" content={`Printable CV — ${title}`} />
+    <!-- The CV had no icon at all, so its tab fell back to the browser's own. -->
+    <link rel="icon" type="image/svg+xml" href={withBase("/favicon.svg")} />
+    <link rel="shortcut icon" href={withBase("/favicon.ico")} />
+
+    <script is:inline>
+      (() => {
+        try {
+          const stored = localStorage.getItem("theme");
+          const dark =
+            stored === "dark" ||
+            (stored !== "light" &&
+              window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.classList.toggle("dark", dark);
+        } catch {
+          /* Private browsing can throw. Light is the safe default. */
+        }
+      })();
+    </script>
   </head>
 
   <body
