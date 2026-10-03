@@ -12,10 +12,14 @@
   --measure: 68ch;
 }
 
-/* The viewing volume. */
+/* The viewing volume.
+   Deliberately NOT the perspective element. A non-none `perspective` also
+   becomes the containing block for `position: fixed` descendants, which broke
+   the desk: .record-ground is `fixed inset-0`, and with perspective above it the
+   ground was sized to the whole 4600px record and scrolled away with it instead
+   of staying put behind the sheet. The perspective belongs on .hero-stage,
+   below. */
 .record-stage {
-  perspective: 1500px;
-  perspective-origin: 50% 0%;
   overflow-x: clip;
 }
 
@@ -78,21 +82,41 @@
   }
 }
 
-/* The depth context for the record's body.
-
-   Its own stacking context, sitting below the header in normal flow, so the
-   header wins on stacking while the content still gains real depth from the
-   perspective on .record-stage above. */
+/* The record's body. An ordinary 2D wrapper: its only job is to keep the header
+   out of the depth context so the header stays ordinary 2D sticky. */
 .depth-stage {
+  /* nothing to preserve */
+}
+
+/* --------------------------------------------------------------------------
+   THE VIEWING VOLUME — scoped to the hero.
+
+   The perspective used to sit on .record-stage, which is where it does the most
+   damage and the least good. .record-sheet is `flat` (see the note there — a
+   preserve-3d ancestor breaks the sticky header), so a perspective up at the top
+   was severed by that flat wrapper and reached nothing: every translateZ below
+   was rendering as a no-op. The seal's lift, the "one sheet in a volume"
+   premise, the entire spatial idea — all inert.
+
+   Fixed by moving the perspective down to the one place depth is actually
+   legible: the hero. The seal stands proud of the name there, which is the
+   whole argument of the composition, and it is the only region where a vanishing
+   point behaves. Scoped to the hero rather than the page because a perspective
+   origin on a 4600px-tall element pushes the vanishing point kilometres away and
+   shears everything below the fold sideways.
+   -------------------------------------------------------------------------- */
+.hero-stage {
+  perspective: 1600px;
+  perspective-origin: 50% 0%;
+  /* preserve-3d so the seal's own translateZ is projected rather than merely
+     reordered. Without it the hero is one flat plane and the depth is a lie. */
   transform-style: preserve-3d;
 }
 
-/* Layer depths. Kept modest — beyond ~80px the perspective distortion reads
-   as a gimmick rather than as paper lifted off a desk. */
-.layer-content {
-  transform: translateZ(24px);
-  /* Must be preserve-3d or the seal's own lift inside it is flattened away and
-     the whole hero sits on one plane. */
+/* The printed face of the hero: the name, role, tagline, counted stack. Its own
+   3D context, so each of those can resolve onto the plane from behind it during
+   the arrival. */
+.hero-face {
   transform-style: preserve-3d;
 }
 
@@ -212,6 +236,119 @@
 }
 
 /* --------------------------------------------------------------------------
+   THE ARRIVAL
+
+   The record does not fade in. It arrives: the sheet settles into the volume,
+   the ruling draws, the name resolves out of the depth onto the plane, and the
+   seal comes down last and presses. One sequence, 1.35s, telling the reader
+   what kind of document they have landed on before they read a word of it.
+
+   Two properties this must have, or it is a gimmick:
+
+   1. Nothing is hidden without JS. The staged elements are at their resting
+      state in CSS; only `html[data-settling]` (set by an inline script before
+      first paint) introduces the offset start. No JS, no crawler, no
+      prerender — fully visible.
+   2. Nothing waits on it. Every element stays clickable and hit-testable
+      throughout, because the sequence animates transform and opacity only. A
+      reader who arrived mid-sequence can still hit the seal.
+
+   Scoped to `prefers-reduced-motion: no-preference` rather than nulled inside a
+   `reduce` block, so a reader who has asked for stillness gets the resting
+   state by there being no animation to fight — not by a 0.01ms one.
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  html[data-settling="true"] .record-sheet {
+    animation: sheet-arrive 1100ms var(--ease-settle) both;
+  }
+
+  /* The seal: the one thing permitted to outrank the name, so it lands last and
+     it lands hardest — 210px above the plane, which at 1600px perspective is
+     15% oversized coming down to rest. Reads as a stamp being pressed. */
+  html[data-settling="true"] .layer-seal {
+    animation: seal-descend 1000ms var(--ease-settle) 300ms both;
+  }
+
+  /* The name resolves out of depth and sets onto the plane: 130px behind it,
+     which projects to 92% scale, so it grows 8% as it arrives. */
+  html[data-settling="true"] [data-stage="name"] {
+    animation: face-set 760ms var(--ease-settle) 240ms both;
+  }
+
+  html[data-settling="true"] [data-stage="role"] {
+    animation: face-set 700ms var(--ease-settle) 380ms both;
+  }
+
+  html[data-settling="true"] [data-stage="claim"] {
+    animation: face-set 700ms var(--ease-settle) 500ms both;
+  }
+
+  html[data-settling="true"] [data-stage="count"] {
+    animation: face-set 700ms var(--ease-settle) 620ms both;
+  }
+
+  html[data-settling="true"] [data-stage="extent"] {
+    animation: face-set 700ms var(--ease-settle) 460ms both;
+  }
+
+  /* Below the hero, nothing animates on load — a reader who never scrolls past
+     the fold should not be made to wait for work they never see. These reveal as
+     they are reached instead, quietly, once each. */
+  html[data-settling="true"] [data-reveal]:not([data-revealed="true"]) {
+    opacity: 0;
+  }
+
+  html[data-reveal][data-revealed="true"] {
+    animation: section-rise 620ms var(--ease-settle) both;
+  }
+}
+
+@keyframes sheet-arrive {
+  from {
+    transform: translateY(28px) scale(0.985);
+    opacity: 0.72;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+/* Content resolving out of depth onto the printed plane. */
+@keyframes face-set {
+  from {
+    transform: translateZ(-130px);
+    opacity: 0;
+  }
+  to {
+    transform: translateZ(0);
+    opacity: 1;
+  }
+}
+
+@keyframes seal-descend {
+  from {
+    transform: translateZ(210px);
+    opacity: 0;
+  }
+  to {
+    transform: translateZ(64px);
+    opacity: 1;
+  }
+}
+
+@keyframes section-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
    Reduced motion and print: the sheet flattens completely.
    -------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
@@ -221,8 +358,9 @@
   }
 
   .layer-ground,
-  .layer-content,
-  .layer-seal {
+  .layer-seal,
+  [data-stage],
+  [data-reveal] {
     transform: none !important;
   }
 
@@ -236,9 +374,23 @@
 }
 
 @media print {
+  /* The arrival is a screen gesture. On paper the record was always already
+     there, and a half-played sequence would print as a blank block. */
   .layer-ground,
-  .layer-content,
-  .layer-seal {
+  .layer-seal,
+  [data-stage],
+  [data-reveal] {
     transform: none !important;
+  }
+
+  [data-reveal],
+  [data-stage] {
+    opacity: 1 !important;
+    animation: none !important;
+  }
+
+  .record-sheet {
+    opacity: 1 !important;
+    animation: none !important;
   }
 }

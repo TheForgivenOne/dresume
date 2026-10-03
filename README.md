@@ -114,6 +114,7 @@ node scripts/probe-occlusion.mjs   http://127.0.0.1:4321/dresume/
 node scripts/probe-menu.mjs        http://127.0.0.1:4321/dresume/
 node scripts/probe-type.mjs        http://127.0.0.1:4321/dresume/
 node scripts/probe-zoom.mjs        http://127.0.0.1:4321/dresume/ 2
+node scripts/probe-motion.mjs      http://127.0.0.1:4321/dresume/ 1280
 ```
 
 `probe-responsive` walks nine device widths and asserts no overflow, body copy
@@ -125,6 +126,16 @@ something covers it. `probe-menu` drives the mobile disclosure through the
 DevTools protocol. `probe-type` reports the display size, body measure and
 label tracking per width. `probe-zoom` re-runs at 200% OS text, which is where
 fixed rem sizes collide.
+
+`probe-motion` takes a width and is the one that checks the arrival and the
+depth, because both failed invisibly at least once. It compares each layer's
+`offsetWidth` against its bounding rect — if those agree, the perspective is not
+reaching that layer and every `translateZ` above it is decorative. It samples the
+sequence to confirm the sheet arrives before the things printed on it and the seal
+lands last, taps the seal mid-flight to confirm the reader is not locked out,
+scrolls the whole page to confirm no section is stranded invisible, and re-runs
+with `prefers-reduced-motion` forced and with scripting disabled to confirm the
+page is complete both ways.
 
 All need only Chromium; there is no test dependency.
 

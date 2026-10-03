@@ -101,11 +101,7 @@ const PROBE = `(() => {
     const cs = getComputedStyle(el);
     const r = el.getBoundingClientRect();
     if (r.height < 1) return null;
-    // Measure the *rendered* advance width of this element's own font, so the
-    // ch figure is comparable across families instead of assuming one.
-    const ch =
-      measureText('0', cs.font) ||
-      parseFloat(cs.fontSize) * 0.5;
+    const ch = advance(cs) || parseFloat(cs.fontSize) * 0.5;
     const full = (el.textContent || '').trim();
     return {
       tag: el.tagName.toLowerCase(),
@@ -126,16 +122,30 @@ const PROBE = `(() => {
     .map(rect)
     .filter(Boolean);
 
-  // One text node, not one class — measured once, reused.
-  const measureText = (text, font) => {
+  // Measure an element's own advance width for '0'.
+  //
+  // The cssText font shorthand is deliberately NOT used: it serialises to ""
+  // for self-hosted families, which silently measures the probe in the default
+  // serif. That made every measure read ~15% long and would have had me
+  // "fixing" a 68ch column that was already correct. Individual properties
+  // serialise reliably.
+  const advance = (cs) => {
     const probe = document.createElement('span');
     probe.textContent = '0'.repeat(100);
-    probe.style.cssText =
-      'position:absolute;visibility:hidden;white-space:pre;font:' + font;
+    probe.style.position = 'absolute';
+    probe.style.visibility = 'hidden';
+    probe.style.whiteSpace = 'pre';
+    probe.style.top = '0';
+    probe.style.left = '-9999px';
+    probe.style.fontFamily = cs.fontFamily;
+    probe.style.fontSize = cs.fontSize;
+    probe.style.fontWeight = cs.fontWeight;
+    probe.style.fontStyle = cs.fontStyle;
+    probe.style.letterSpacing = '0';
     document.body.appendChild(probe);
     const w = probe.getBoundingClientRect().width / 100;
     probe.remove();
-    return w ? text / w : 0;
+    return w;
   };
 
   const out = {};
@@ -208,33 +218,38 @@ for (const w of WIDTHS) {
 
 // ---- report -------------------------------------------------------------
 
-console.log("display type — does the name stay sane as the screen narrows?\n");
+console.log("display type — the name, and how much of the line it takes\n");
+console.log("  width    size   lines   chars   share of line\n");
 for (const { w, r } of rows) {
   const d = r.display;
   if (!d) continue;
-  // A display size that grows as the viewport shrinks is a vw unit doing the
-  // wrong thing; a name wrapping to 3+ lines is a reader losing the thread.
-  const flag = d.lines > 2 ? "  <- wraps" : "";
+  const share = Math.round((d.ch / 42) * 100);
+  const flag = d.lines > 2 ? "  <- wraps" : share > 95 ? "  <- fills it" : "";
   console.log(
-    `  ${String(w).padStart(4)}px   ${String(d.size).padStart(5)}px   ${d.lines} line(s)   ${d.ch}ch${flag}`,
+    `  ${String(w).padStart(4)}px  ${String(d.size).padStart(6)}px   ${d.lines}    ${String(d.ch).padStart(3)}   ${String(share).padStart(3)}%${flag}`,
   );
 }
 
-console.log("\nbody measure — target 45-75ch, outside that is tiring\n");
+console.log(
+  "\nbody measure — target 45-75ch.\n  A narrow phone cannot reach 45ch at 16px; that is geometry, not a defect.\n  The floor is a check on desktop.\n",
+);
 for (const { w, r } of rows) {
   const b = r.longest ?? r.body[0];
   if (!b || !b.ch) continue;
-  const tight = b.ch < 40 ? "  <- short" : b.ch > 80 ? "  <- long" : "";
-  console.log(`  ${String(w).padStart(4)}px   ${String(b.size).padStart(5)}px   ${b.ch}ch${tight}`);
+  const note =
+    b.ch > 75 ? "  <- too wide" : b.ch < 45 && w >= 640 ? "  <- too narrow" : "";
+  console.log(
+    `  ${String(w).padStart(4)}px  ${String(b.size).padStart(6)}px  ${String(b.ch).padStart(3)}ch${note}`,
+  );
 }
 
-console.log("\nseal label — 0.7rem caps need looser tracking, not tighter, at small sizes\n");
-console.log("\nlabel tracking — wide tracking in a narrow column reads as noise\n");
+console.log("\nlabel tracking — as a proportion of the size, that is what reads\n");
 for (const { w, r } of rows) {
   const s = r.sealLabel;
   if (!s) continue;
+  const pct = Math.round((s.tracking / s.size) * 1000) / 10;
   console.log(
-    `  ${String(w).padStart(4)}px   ${String(s.size).padStart(5)}px   tracking ${s.tracking}px   ${s.lines} line(s)`,
+    `  ${String(w).padStart(4)}px  ${String(s.size).padStart(6)}px   tracking ${s.tracking}px = ${pct}%`,
   );
 }
 

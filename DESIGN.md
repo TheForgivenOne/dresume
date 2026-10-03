@@ -298,16 +298,84 @@ columns at `md` and one below that. Skills run two paired columns.
 
 ## Elevation & Depth
 
-Depth is structural, not decorative: the record occupies a real viewing volume
-(`perspective: 1500px`) and its parts sit at fixed distances — content 24px
-proud of the sheet, the seal 64px proud of that. Offsets stay under 80px,
-because beyond that the perspective reads as a gimmick rather than as paper
-lifted off a desk.
+Depth is structural, not decorative: the hero occupies a real viewing volume
+(`perspective: 1600px`) and the seal sits at a fixed distance — 64px proud of the
+printed face. Offsets stay under 80px, because beyond that the perspective reads
+as a gimmick rather than as paper lifted off a desk.
+
+**The perspective is scoped to the hero, and that is load-bearing.** It was
+originally on `.record-stage`, at the top of the page, where it did no good and
+considerable harm:
+
+- `.record-sheet` must stay `flat` (see The Flat-Sheet Rule below), and a flat
+  wrapper severs the 3D chain. Every `translateZ` below it was therefore
+  rendering as a no-op — the seal's lift, and the "one sheet in a volume" premise
+  the whole design rests on, were inert. Nothing looked wrong, because a
+  transform that projects nothing looks exactly like one that does not exist.
+- A non-none `perspective` also becomes the containing block for `position:
+  fixed` descendants. `.record-ground` is `fixed inset-0`; with perspective above
+  it, the desk was sized to the full 4600px record and scrolled away with it
+  instead of staying behind the sheet. It sits behind everything, so it was
+  invisible as a bug.
+
+So the perspective now lives on `.hero-stage` — the one region where depth is
+legible, because that is where the seal outranks the name and the composition has
+something to say about it. Scoped rather than page-wide for a third reason: a
+perspective origin on a 4600px-tall element puts the vanishing point far enough
+away to shear everything below the fold sideways.
+
+`probe-motion.mjs` asserts the depth is real by comparing each layer's
+`offsetWidth` against its bounding rect. If those agree, there is no perspective
+on that element and every offset above it is decorative.
 
 The sheet itself tilts as one object (max 2.4°, exponential ease-out,
 `requestAnimationFrame`-throttled) and settles flat when the pointer leaves.
 Individual cards never rotate — a printed record does not wobble, and a resume
-whose cards each animate is a resume nobody can read.
+whose cards each animate is a resume nobody can read. The tilt attaches only once
+the arrival has finished (below): a record still descending into the volume should
+not respond to a pointer yet, and two animations writing the same `transform`
+would read as a wobble.
+
+## The Arrival
+
+The record does not fade in. It arrives, in one sequence of about 1.35s, and the
+order is the argument:
+
+| when | | from → to |
+|---|---|---|
+| 0ms | the sheet settles into the volume | `translateY(28px) scale(.985)` → rest |
+| 240ms | the name resolves out of depth onto the plane | `translateZ(-130px)` → `0` |
+| 300ms | **the seal descends and presses** | `translateZ(210px)` → `64px` |
+| 380ms | role, location, availability set | as the name |
+| 420ms | the ruling draws across each division | `scaleX(0)` → `scaleX(1)` |
+| 460ms | the extent of the record sets | as the name |
+| 500ms | the claim sets | as the name |
+| 620ms | the counted years set | as the name |
+
+The seal lands last and lands hardest: 210px above the plane at 1600px perspective
+is 15% oversized on arrival, which at `--ease-settle` reads as a stamp being
+pressed rather than as a fade. It is the page's one dominant gesture, and the
+arrival spends it last.
+
+Below the hero nothing animates on load. A reader who never scrolls past the fold
+should not pay for work they never see, so the remaining sections carry
+`data-reveal` and arrive quietly as they are reached — once each, unmemoed.
+
+Three properties this has to keep, each guarded by a check:
+
+1. **Nothing is hidden without JS.** The staged elements are at their resting state
+   in CSS; only `html[data-settling]` — set by an inline script before first paint
+   — introduces the offset start. No JS, no crawler, no prerender: fully visible.
+2. **Nothing waits on it.** Every stage animates `transform` and `opacity` only, so
+   the seal is clickable while the sheet is still descending. A reader who arrives
+   mid-sequence can still act.
+3. **Nothing is stranded.** `data-reveal` hides content, so a 2.5s failsafe reveals
+   everything regardless of whether `IntersectionObserver` ever fires. The observer
+   is an enhancement; the timeout guarantees the page is complete.
+
+Motion is gated by `@media (prefers-reduced-motion: no-preference)` rather than
+nulled inside a `reduce` block, so a reader who has asked for stillness gets the
+resting state by there being no animation to fight — not by a 0.01ms one.
 
 ### Shadow Vocabulary
 - **Lift** (`0 1px 2px … 0 18px 40px`, three layers): the sheet on the desk.
@@ -326,16 +394,25 @@ paper reads as a bruise on carbon.
 seal carry a resting shadow; every other element separates with a hairline.
 
 **The One Gesture Rule.** Depth appears in exactly one authored moment — the
-seal press. Everything else is either static or a state change, and everything
-is suppressed under `prefers-reduced-motion: reduce`, which flattens the sheet
-and every layer to `transform: none`.
+seal: pressed by a pointer, and descended onto the page by the arrival. Everything
+else is either static or a state change, and everything is suppressed under
+`prefers-reduced-motion: reduce`, which flattens the sheet and every layer to
+`transform: none`.
 
 **The Flat-Sheet Rule.** `.record-sheet` must stay a flat element. Inside a
 `preserve-3d` context a sticky child projects out of the viewport as it pins —
 leaving a strip of desk above the header — and paint order follows z-position
 rather than `z-index`, so scrolled content renders straight over the bar no
-matter what `z-40` says. The depth context is nested one level down
-(`.depth-stage`) so the header remains ordinary 2D sticky.
+matter what `z-40` says. The header therefore sits outside the depth context
+entirely: the sheet is flat, and the perspective begins below it at
+`.hero-stage`. The cost of this rule is that the depth cannot live on the sheet
+itself, which is why it is scoped to the hero instead.
+
+**The No-Blank-Page Rule.** A load animation may never be the reason a reader
+sees nothing. Every staged element is at its resting state unless JS ran *and*
+the reader has not asked for reduced motion; nothing waits on the sequence
+finishing; and anything hidden by a scroll observer has a timeout that reveals it
+regardless. All three are asserted by `probe-motion.mjs`, not by eye.
 
 ## Shapes
 
@@ -424,8 +501,9 @@ footnote and must not stack under the content at wide widths.
   neutral.
 - **Don't** add a `tailwind.config.js`. Tailwind 4 has no config file; tokens
   live in `@theme`.
-- **Don't** tilt individual cards or animate sections on scroll. The sheet
-  tilts as one object; that is the whole gesture.
+- **Don't** tilt individual cards. The sheet tilts as one object; that is the
+  whole gesture. (The arrival *does* animate sections on scroll, but as a quiet
+  rise, once each — see The Arrival. That is not a gesture, it is a reading aid.)
 - **Don't** use glass, backdrop blur, gradient text, or Unicode glyphs as
   icons. Icons are authored SVG at one stroke weight.
 - **Don't** put a kicker or eyebrow above a heading.
@@ -434,5 +512,15 @@ footnote and must not stack under the content at wide widths.
 - **Don't** size a touch target by viewport width alone. Gate compact sizes on
   `(pointer: coarse)`, or just leave them at 44px.
 - **Don't** set `preserve-3d` on an element containing `position: sticky`.
+- **Don't** put `perspective` on a `position: fixed` element's ancestor. It
+  becomes the containing block, and the fixed element silently becomes a strip of
+  the page's height that scrolls away.
+- **Don't** write an `offsetWidth` check as a `transform` round-trip. An inline
+  transform loses to a finished `animation-fill-mode: both` keyframe, and
+  reading immediately after writing reads the pre-transition value. Compare
+  `offsetWidth` against the bounding rect instead — that is projection measured
+  directly, with nothing to outrace.
+- **Don't** hide content behind a scroll observer without a timeout that reveals
+  it. A section whose observer never fires is a section nobody can read.
 - **Don't** add a second layout effect to `/cv` without re-checking print
   preview in both Chrome and Firefox.

@@ -53,6 +53,8 @@ jobs:
           node scripts/probe-occlusion.mjs http://127.0.0.1:4321/dresume/
           node scripts/probe-menu.mjs http://127.0.0.1:4321/dresume/
           node scripts/probe-zoom.mjs http://127.0.0.1:4321/dresume/ 2
+          node scripts/probe-motion.mjs http://127.0.0.1:4321/dresume/ 1280
+          node scripts/probe-motion.mjs http://127.0.0.1:4321/dresume/ 390
           bunx astro preview stop
 
       # Reports without failing, so placeholder content can still be deployed

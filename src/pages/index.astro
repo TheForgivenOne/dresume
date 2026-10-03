@@ -71,11 +71,16 @@ const spine = {
 <BaseLayout>
   <!-- ============================================================ IDENTITY -->
   <section id="record" class="scroll-mt-28">
+    {/* The viewing volume. The perspective lives here rather than on an outer
+        wrapper — see the .hero-stage note in depth.css. */}
     <div
-      class="grid grid-cols-1 gap-x-14 gap-y-10 lg:grid-cols-[1fr_auto] lg:items-start lg:gap-y-14"
+      class="hero-stage grid grid-cols-1 gap-x-14 gap-y-10 lg:grid-cols-[1fr_auto] lg:items-start lg:gap-y-14"
     >
-      <div>
+      {/* The printed face. Its own 3D context, so the name can resolve onto the
+          plane from behind it. */}
+      <div class="hero-face">
         <h1
+          data-stage="name"
           class="font-record text-[clamp(3.2rem,11vw,6rem)] leading-[0.92] tracking-[-0.02em]"
         >
           {site.name}
@@ -83,6 +88,7 @@ const spine = {
 
         <!-- Role, location and availability share one ruled baseline. -->
         <div
+          data-stage="role"
           class="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-rule-strong pt-4"
         >
           <span class="text-[1rem] font-medium text-ink">{site.title}</span>
@@ -107,6 +113,7 @@ const spine = {
             reads at 11.2px when the OS bumps text size, so it must not be the
             one block that stays put while everything around it grows. */}
         <p
+          data-stage="claim"
           class="mt-8 max-w-[52ch] text-[clamp(1.05rem,0.95rem+0.4vw,1.35rem)] leading-relaxed text-ink-muted"
         >
           {site.tagline}
@@ -114,7 +121,7 @@ const spine = {
 
         {
           earliest && (
-            <div class="mt-9">
+            <div data-stage="count" class="mt-9">
               <CountedStack years={yearsInField} label="Years in practice" />
             </div>
           )
@@ -128,7 +135,7 @@ const spine = {
 
         {
           totals.length > 0 && (
-            <div class="w-full border-t border-rule pt-4">
+            <div data-stage="extent" class="w-full border-t border-rule pt-4">
               <FieldLabel>Record contains</FieldLabel>
               <ul class="mt-2.5 space-y-1">
                 {totals.map((t) => (
@@ -147,7 +154,7 @@ const spine = {
   </section>
 
   <!-- ================================================================ ABOUT -->
-  <section class="pt-16">
+  <section data-reveal class="pt-16">
     <SectionHead id="about" title="The record" lede={spine.record} />
     <div class="max-w-[68ch] space-y-4">
       {site.bio.map((para) => <p class="text-[1rem] leading-relaxed text-ink-muted">{para}</p>)}
@@ -157,7 +164,7 @@ const spine = {
   <!-- =========================================================== EXPERIENCE -->
   {
     jobs.length > 0 && (
-      <section class="pt-20">
+      <section data-reveal class="pt-20">
         <SectionHead
           id="experience"
           title="Experience"
@@ -189,7 +196,7 @@ const spine = {
       it. Education and skills are supporting detail, so they follow. */}
   {
     works.length > 0 && (
-      <section class="pt-20">
+      <section data-reveal class="pt-20">
         <SectionHead
           id="projects"
           title="Projects"
@@ -208,7 +215,7 @@ const spine = {
   <!-- =============================================================== SKILLS -->
   {
     skillGroups.length > 0 && (
-      <section class="pt-20">
+      <section data-reveal class="pt-20">
         <SectionHead id="skills" title="Skills" lede={spine.skills} />
         <SkillsTable />
       </section>
@@ -218,7 +225,7 @@ const spine = {
   <!-- ============================================================ EDUCATION -->
   {
     studies.length > 0 && (
-      <section class="pt-20">
+      <section data-reveal class="pt-20">
         <SectionHead
           id="education"
           title="Education"
@@ -245,7 +252,7 @@ const spine = {
   }
 
   <!-- ============================================================== CONTACT -->
-  <section id="contact" class="scroll-mt-28 pt-20">
+  <section id="contact" data-reveal class="scroll-mt-28 pt-20">
     <SectionHead id="contact-title" title="Contact" lede={spine.contact} />
 
     <div class="grid grid-cols-1 gap-10 md:grid-cols-[1fr_auto] md:items-end">
