@@ -1,0 +1,149 @@
+---
+import CVLayout from "../layouts/CVLayout.astro";
+import { getCollection } from "astro:content";
+import { site } from "../data/site";
+import { skillGroups } from "../data/skills";
+import { formatRange, yearsBetween } from "../lib/date";
+
+/**
+ * The certified copy. Rendered from the same collections as the screen record,
+ * which is the whole point: there is no second copy of the content to fall out
+ * of date. No header, no theme toggle, no depth, no navigation.
+ *
+ * A section with no entries is omitted entirely rather than left empty.
+ */
+const [experience, education] = await Promise.all([
+  getCollection("experience", ({ data }) => !data.draft),
+  getCollection("education", ({ data }) => !data.draft),
+]);
+
+const ordered = [...experience].sort(
+  (a, b) =>
+    a.data.order - b.data.order || b.data.start.valueOf() - a.data.start.valueOf(),
+);
+
+const orderedEducation = [...education].sort(
+  (a, b) =>
+    a.data.order - b.data.order || b.data.start.valueOf() - a.data.start.valueOf(),
+);
+---
+
+<CVLayout title={`${site.name} — CV`}>
+  <header class="cv-head">
+    <div>
+      <h1 class="cv-name">{site.name}</h1>
+      <p class="cv-role">{site.title}</p>
+    </div>
+
+    <p class="cv-contact">
+      {site.email}<br />
+      {site.location}<br />
+      {site.social.github && <span>{site.social.github.replace(/^https?:\/\//, "")}</span>}
+    </p>
+  </header>
+
+  {
+    site.bio.length > 0 && (
+      <section class="cv-section">
+        <h2>Record</h2>
+        {site.bio.map((para) => (
+          <p style="margin:0 0 0.3rem; max-width:64ch">{para}</p>
+        ))}
+      </section>
+    )
+  }
+
+  {
+    ordered.length > 0 && (
+      <section class="cv-section">
+        <h2>Experience</h2>
+        {ordered.map((job) => (
+          <article class="cv-entry">
+            <div class="cv-entry-head">
+              <h3>
+                {job.data.role} · {job.data.organisation}
+              </h3>
+              <span class:list={["cv-dates", !job.data.end && "cv-current"]}>
+                {formatRange(job.data.start, job.data.end)}
+              </span>
+            </div>
+
+            <p class="cv-org">
+              {[job.data.location, `${yearsBetween(job.data.start, job.data.end)} yrs`]
+                .filter(Boolean)
+                .join(" · ")}
+            </p>
+
+            <p style="margin:0.2rem 0 0; max-width:64ch">{job.data.summary}</p>
+
+            {job.data.highlights.length > 0 && (
+              <ul class="cv-bullets">
+                {job.data.highlights.map((h) => (
+                  <li>{h}</li>
+                ))}
+              </ul>
+            )}
+
+            {job.data.tags.length > 0 && (
+              <p class="cv-tags">{job.data.tags.join(" · ")}</p>
+            )}
+          </article>
+        ))}
+      </section>
+    )
+  }
+
+  {
+    orderedEducation.length > 0 && (
+      <section class="cv-section">
+        <h2>Education</h2>
+        {orderedEducation.map((item) => (
+          <article class="cv-entry">
+            <div class="cv-entry-head">
+              <h3>
+                {item.data.qualification} · {item.data.institution}
+              </h3>
+              <span class="cv-dates">
+                {formatRange(item.data.start, item.data.end)}
+              </span>
+            </div>
+            {item.data.summary && (
+              <p style="margin:0.2rem 0 0; max-width:64ch">
+                {item.data.summary}
+              </p>
+            )}
+          </article>
+        ))}
+      </section>
+    )
+  }
+
+  {
+    skillGroups.length > 0 && (
+      <section class="cv-section">
+        <h2>Skills</h2>
+        <div class="cv-two-col">
+          {skillGroups.map((group) => (
+            <div>
+              <p
+                style="font-family:'Azeret Mono',monospace;font-size:7.3pt;letter-spacing:0.14em;text-transform:uppercase;color:var(--cv-muted);margin:0 0 0.3rem"
+              >
+                {group.group}
+              </p>
+              {group.skills.map((skill) => (
+                <div class="cv-skill">
+                  <span>{skill.name}</span>
+                  <span class="cv-pips">
+                    {Array.from({ length: 5 }, (_, i) => (
+                      <span class="cv-pip" data-filled={i < skill.level ? "true" : "false"} />
+                    ))}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      </section>
+    )
+  }
+</CVLayout>

@@ -1,0 +1,45 @@
+---
+import FieldLabel from "./FieldLabel.astro";
+
+/**
+ * The counted stack. Years of practice as a run of ruled cells — the way a
+ * transcript carries a grade point scale — rather than a large figure with a
+ * caption under it, which would read as a statistic tile instead of a measure
+ * on a record.
+ */
+interface Props {
+  years: number;
+  label: string;
+  /** Cells drawn before the run compresses. */
+  max?: number;
+  /** Minimum cells to draw, so a full run still shows an empty track. */
+  track?: number;
+}
+
+const { years, label, max = 24, track = 12 } = Astro.props;
+const cells = Math.min(Math.max(years, 1), max);
+/* Always draw an empty tail, or a full run reads as a solid bar rather than a
+   measure on a scale. The numeral, not the block, carries the truth. */
+const drawn = Math.max(cells, Math.min(track, cells + 3));
+const compressed = years > max;
+---
+
+<div class="inline-flex items-center gap-4">
+  <div class="flex items-end gap-[3px]" aria-hidden="true">
+    {
+      Array.from({ length: drawn }, (_, i) => (
+        <span class="stack-cell" data-filled={i < years ? "true" : "false"} />
+      ))
+    }
+  </div>
+
+  <div class="flex items-baseline gap-2">
+    <span class="font-record text-2xl leading-none tabular">{years}</span>
+    <FieldLabel>
+      {label}
+      {compressed && <span class="text-carmine"> +{years - max}</span>}
+    </FieldLabel>
+  </div>
+
+  <span class="sr-only">{years} years {label.toLowerCase()}</span>
+</div>

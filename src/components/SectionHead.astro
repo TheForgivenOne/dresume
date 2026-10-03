@@ -1,0 +1,25 @@
+---
+/**
+ * A division of the record. The heading carries its own weight — there is no
+ * kicker or eyebrow above it — and the rule beneath does the separating.
+ */
+interface Props {
+  id: string;
+  title: string;
+  /** Right-hand column note, e.g. a count. Optional. */
+  meta?: string;
+}
+
+const { id, title, meta } = Astro.props;
+---
+
+<div class="mb-8 flex items-baseline justify-between gap-6 border-b border-rule-strong pb-2">
+  <h2 id={id} class="scroll-mt-28 font-record text-[1.75rem] leading-none">
+    {title}
+  </h2>
+  {meta && (
+    <span class="font-code text-[0.62rem] tracking-[0.18em] text-ink-subtle uppercase tabular">
+      {meta}
+    </span>
+  )}
+</div>

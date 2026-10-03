@@ -1,0 +1,22 @@
+---
+/**
+ * Applies the stored theme before first paint. Must be inline and in <head>:
+ * a deferred or bundled script runs after paint and the page flashes the wrong
+ * theme first. Reads "system" as the absence of a stored preference.
+ */
+---
+
+<script is:inline>
+  (() => {
+    try {
+      const stored = localStorage.getItem("theme");
+      const dark =
+        stored === "dark" ||
+        (stored !== "light" &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches);
+      document.documentElement.classList.toggle("dark", dark);
+    } catch {
+      /* Private browsing can throw on localStorage. Light is the safe default. */
+    }
+  })();
+</script>

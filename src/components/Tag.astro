@@ -1,0 +1,16 @@
+---
+/**
+ * A chip, in the register of a ruled index entry rather than a pill badge.
+ * Bounded, mono, and quiet — it names a technology, not a personality.
+ *
+ * Content arrives through the default slot. Declaring `children` in Props and
+ * rendering it does not work: Astro passes component children to <slot />, so
+ * `{children}` here would be undefined and the chip would render empty.
+ */
+---
+
+<span
+  class="inline-flex items-center border border-rule px-2 py-[0.15rem] font-code text-[0.62rem] leading-normal tracking-[0.06em] text-ink-muted"
+>
+  <slot />
+</span>

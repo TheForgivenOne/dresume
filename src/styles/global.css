@@ -1,0 +1,243 @@
+@import "tailwindcss";
+
+/* Self-hosted faces. Referenced relatively so Vite fingerprints them and
+   rewrites the URLs with the /dresume base. Caslon carries the record voice,
+   Archivo carries the data fields, Azeret Mono carries codes and measurement. */
+@font-face {
+  font-family: "Libre Caslon Text";
+  src: url("../assets/fonts/libre-caslon-text-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Libre Caslon Text";
+  src: url("../assets/fonts/libre-caslon-text-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Archivo";
+  src: url("../assets/fonts/archivo-var.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Azeret Mono";
+  src: url("../assets/fonts/azeret-mono-var.woff2") format("woff2");
+  font-weight: 400 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Drives `dark:` from a class on <html> so the toggle works. Without this
+   line dark utilities key off prefers-color-scheme and the toggle is inert. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* The record paper. Warm throughout — a blue-gray would read as a template. */
+  --color-desk: #e0d9c8;
+  --color-paper: #f2eee4;
+  --color-paper-raised: #fbf9f4;
+  --color-paper-sunken: #e7e1d3;
+  --color-ink: #191512;
+  --color-ink-muted: #57503f;
+  --color-ink-subtle: #857c68;
+  --color-rule: #cdc4b0;
+  --color-rule-strong: #a2977c;
+
+  /* The one reserved ink. Spent only on what is currently under examination.
+     --exam-ink is set inline from site.ts at runtime; indirection through a
+     variable means that inline value cannot out-rank the .dark rule below. */
+  --color-carmine: var(--exam-ink, #9d2135);
+
+  /* Note: there is deliberately no `--color-accent` and no secondary accent.
+     The whole system rests on one ink, and interactive states use dense ink
+     instead. An unused accent token would be a licence to add a second. */
+
+  --font-record: "Libre Caslon Text", "Iowan Old Style", Georgia, serif;
+  --font-data: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --font-code: "Azeret Mono", ui-monospace, monospace;
+
+  --ease-settle: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-press: cubic-bezier(0.32, 0.72, 0, 1);
+
+  /* Emboss. Offset plus blur — a zero-offset halo would be decoration. */
+  --shadow-emboss: 0 1px 0 rgb(255 255 255 / 0.7), 0 -1px 0 rgb(25 21 18 / 0.06),
+    0 2px 3px rgb(25 21 18 / 0.07);
+  --shadow-press: inset 0 2px 4px rgb(25 21 18 / 0.16),
+    inset 0 -1px 0 rgb(255 255 255 / 0.5);
+  --shadow-lift: 0 1px 2px rgb(25 21 18 / 0.05), 0 6px 16px rgb(25 21 18 / 0.07),
+    0 18px 40px rgb(25 21 18 / 0.06);
+}
+
+/* The same record at night: a carbon copy under low light.
+
+   Scoped to `html.dark`, not `.dark`. The theme's own tokens are emitted on
+   `:root`, which has the same specificity as a bare class — so a `.dark`
+   selector loses or wins purely on source order, and the dark theme silently
+   never applies. Qualifying with the element raises specificity above it. */
+html.dark {
+  --color-desk: #080705;
+  --color-paper: #15120e;
+  --color-paper-raised: #1e1a14;
+  --color-paper-sunken: #0d0b08;
+  --color-ink: #f1ece0;
+  --color-ink-muted: #a79d88;
+  --color-ink-subtle: #7b7362;
+  --color-rule: #332c21;
+  --color-rule-strong: #524a3a;
+  /* Derived rather than hardcoded, so a custom exam ink stays legible on a
+     dark ground without a second value to keep in sync. */
+  --color-carmine: color-mix(in oklab, var(--exam-ink, #9d2135) 52%, #f1ece0);
+
+  --shadow-emboss: 0 1px 0 rgb(255 255 255 / 0.05), 0 -1px 0 rgb(0 0 0 / 0.3),
+    0 2px 4px rgb(0 0 0 / 0.4);
+  --shadow-press: inset 0 2px 5px rgb(0 0 0 / 0.5),
+    inset 0 -1px 0 rgb(255 255 255 / 0.04);
+  --shadow-lift: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 20px rgb(0 0 0 / 0.45),
+    0 20px 44px rgb(0 0 0 / 0.35);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 7rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-desk);
+    color: var(--color-ink);
+    font-family: var(--font-data);
+    font-feature-settings: "kern", "liga";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-record);
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Every date, count and measurement in the record is tabular. */
+  time,
+  .tabular,
+  [data-measure] {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+
+  /* The reserved ink belongs to the thing under examination and to nothing
+     else, so focus is signalled in dense ink rather than carmine. */
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background-color: color-mix(in oklab, var(--color-carmine) 22%, transparent);
+  }
+
+  * {
+    scrollbar-color: var(--color-rule-strong) transparent;
+  }
+}
+
+/* Motion is decoration and always optional. */
+/* Rendered Markdown. Preflight strips heading styles, so without this a
+   project's ## headings arrive as undifferentiated body text. */
+.prose-record {
+  color: var(--color-ink-muted);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.prose-record > * + * {
+  margin-top: 1.1rem;
+}
+
+.prose-record h2 {
+  margin-top: 2.75rem;
+  font-family: var(--font-record);
+  font-size: 1.5rem;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--color-ink);
+}
+
+.prose-record h3 {
+  margin-top: 2rem;
+  font-family: var(--font-record);
+  font-size: 1.3rem;
+  line-height: 1.25;
+  color: var(--color-ink);
+}
+
+.prose-record ul,
+.prose-record ol {
+  padding-left: 1.15rem;
+}
+
+.prose-record li + li {
+  margin-top: 0.4rem;
+}
+
+.prose-record a {
+  color: var(--color-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--color-rule-strong);
+  text-underline-offset: 0.22em;
+}
+
+.prose-record a:hover {
+  text-decoration-color: var(--color-ink);
+}
+
+.prose-record strong {
+  color: var(--color-ink);
+  font-weight: 600;
+}
+
+.prose-record code {
+  font-family: var(--font-code);
+  font-size: 0.86em;
+  padding: 0.1em 0.32em;
+  border: 1px solid var(--color-rule);
+}
+
+.prose-record blockquote {
+  border-left: 1px solid var(--color-rule-strong);
+  padding-left: 0.95rem;
+  font-style: italic;
+}
+
+.prose-record hr {
+  border: 0;
+  border-top: 1px solid var(--color-rule);
+  margin-block: 2.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

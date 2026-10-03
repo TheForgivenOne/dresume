@@ -1,0 +1,35 @@
+---
+import "../styles/print.css";
+
+/**
+ * The certified copy. A deliberately separate renderer rather than a print
+ * stylesheet over the screen layout: this page never loads the depth or theme
+ * stylesheets, so no screen styling can reach the paper.
+ */
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="robots" content="noindex" />
+    <meta name="description" content={`Printable CV — ${title}`} />
+  </head>
+
+  <body class="cv">
+    <button type="button" class="cv-print-btn" onclick="window.print()">
+      Save as PDF
+    </button>
+
+    <main class="cv-sheet">
+      <slot />
+    </main>
+  </body>
+</html>

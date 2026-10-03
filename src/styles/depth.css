@@ -1,0 +1,227 @@
+/* ==========================================================================
+   THE REGISTERED RECORD — depth
+   The record is one physical sheet in a viewing volume. Layers sit at real
+   distances rather than being faked with stacked shadows: the ground falls
+   away, the printed sheet is the plane, and the seal stands proud of it.
+   Cards printed on a record do not wobble, so nothing tilts independently.
+   ========================================================================== */
+
+/* One vertical rhythm for the whole page. */
+:root {
+  --baseline: 1.75rem;
+  --measure: 68ch;
+}
+
+/* The viewing volume. */
+.record-stage {
+  perspective: 1500px;
+  perspective-origin: 50% 0%;
+  overflow-x: clip;
+}
+
+/* --------------------------------------------------------------------------
+   THE DESK AND THE SHEET
+   One physical sheet lying on a surface, with real edges and a real shadow.
+   The ruled field is on the sheet, not behind the page — without it the record
+   reads as a flat cream rectangle and the whole world disappears.
+   -------------------------------------------------------------------------- */
+.record-ground {
+  background:
+    radial-gradient(
+      130% 60% at 50% -10%,
+      color-mix(in oklab, var(--color-paper-raised) 55%, transparent) 0%,
+      transparent 60%
+    ),
+    var(--color-desk);
+}
+
+.record-sheet {
+  position: relative;
+  width: min(1120px, 100% - 3rem);
+  margin-inline: auto;
+  transform-style: preserve-3d;
+  transition: transform 500ms var(--ease-settle);
+  will-change: transform;
+
+  /* The ruled paper. Felt, not read: at full strength these rules cut through
+     body copy like strikethroughs and wreck legibility, so they sit just above
+     the paper and below the text in the visual order. */
+  background-color: var(--color-paper-raised);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent calc(var(--baseline) * 2 - 1px),
+    color-mix(in oklab, var(--color-rule) 17%, transparent) calc(var(--baseline) * 2 - 1px),
+    color-mix(in oklab, var(--color-rule) 17%, transparent) calc(var(--baseline) * 2)
+  );
+  border: 1px solid var(--color-rule);
+  box-shadow:
+    0 1px 1px color-mix(in oklab, var(--color-ink) 6%, transparent),
+    0 10px 24px color-mix(in oklab, var(--color-ink) 7%, transparent),
+    0 40px 90px color-mix(in oklab, var(--color-ink) 9%, transparent);
+}
+
+/* On a phone the sheet is the whole desk: no edges, no wasted margin. */
+@media (max-width: 760px) {
+  .record-sheet {
+    width: 100%;
+    border-inline: 0;
+    border-top: 0;
+    box-shadow: none;
+  }
+}
+
+/* Layer depths. Kept modest — beyond ~80px the perspective distortion reads
+   as a gimmick rather than as paper lifted off a desk. */
+.layer-content {
+  transform: translateZ(24px);
+}
+.layer-seal {
+  transform: translateZ(64px);
+  transform-style: preserve-3d;
+}
+
+/* Inside the sheet the ground layer has nothing to fall away from. */
+.layer-ground,
+.layer-sheet {
+  transform: none;
+}
+
+.paper-sheet {
+  background-color: var(--color-paper-raised);
+  box-shadow: var(--shadow-lift);
+}
+
+/* --------------------------------------------------------------------------
+   THE SEAL — the dominant gesture, and the primary action.
+   Embossed, then pressed. The shadow resolves from outset to inset on press,
+   which is the one authored motion on this page.
+   -------------------------------------------------------------------------- */
+.seal {
+  position: relative;
+  display: grid;
+  place-items: center;
+  border-radius: 9999px;
+  background-color: var(--color-paper-raised);
+  color: var(--color-ink);
+  text-decoration: none;
+  box-shadow: var(--shadow-emboss), var(--shadow-lift);
+  transition:
+    transform 220ms var(--ease-press),
+    box-shadow 220ms var(--ease-press),
+    color 200ms var(--ease-settle);
+  transform-style: preserve-3d;
+}
+
+/* The double ring of a struck stamp. */
+.seal::before,
+.seal::after {
+  content: "";
+  position: absolute;
+  border-radius: 9999px;
+  border: 1px solid var(--color-rule-strong);
+  pointer-events: none;
+}
+.seal::before {
+  inset: 0.42rem;
+  border-color: color-mix(in oklab, var(--color-carmine) 45%, transparent);
+  border-width: 2px;
+}
+.seal::after {
+  inset: 0.78rem;
+}
+
+/* Pressed. */
+.seal:active,
+.seal[data-pressed="true"] {
+  transform: translateZ(48px) scale(0.985);
+  box-shadow: var(--shadow-press);
+}
+
+@media (hover: hover) {
+  .seal:hover {
+    transform: translateZ(74px) scale(1.014);
+  }
+  .seal:hover::before {
+    border-color: var(--color-carmine);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   The ruled baseline: a double rule dividing one record from the next, the
+   way a transcript separates its divisions. Draws in once on load.
+   -------------------------------------------------------------------------- */
+.ruled-baseline {
+  height: 0;
+  border-top: 1px solid var(--color-rule-strong);
+  box-shadow: 0 3px 0 -2px var(--color-rule);
+  transform-origin: left center;
+}
+
+.ruled-baseline[data-draw="true"] {
+  animation: baseline-draw 900ms var(--ease-settle) both;
+}
+
+@keyframes baseline-draw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   The counted stack. Years in field as ruled cells rather than a bare figure,
+   so it reads as a measure on a record and not as a statistic tile.
+   -------------------------------------------------------------------------- */
+.stack-cell {
+  width: 0.72rem;
+  height: 1.4rem;
+  border: 1px solid var(--color-rule-strong);
+  background-color: transparent;
+}
+.stack-cell[data-filled="true"] {
+  background-color: var(--color-ink);
+  border-color: var(--color-ink);
+}
+
+/* The present role is the thing under examination: the reserved ink, and only
+   here. Nothing else on this page is allowed to spend it. */
+.under-examination {
+  background-color: var(--color-carmine);
+}
+
+/* --------------------------------------------------------------------------
+   Reduced motion and print: the sheet flattens completely.
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .record-sheet {
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .layer-ground,
+  .layer-sheet,
+  .layer-content,
+  .layer-seal {
+    transform: none !important;
+  }
+
+  .seal {
+    transition: none;
+  }
+
+  .ruled-baseline[data-draw="true"] {
+    animation: none;
+  }
+}
+
+@media print {
+  .layer-ground,
+  .layer-sheet,
+  .layer-content,
+  .layer-seal {
+    transform: none !important;
+  }
+}

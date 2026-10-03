@@ -1,0 +1,109 @@
+---
+import { getCollection } from "astro:content";
+import Icon from "./Icon.astro";
+import ThemeToggle from "./ThemeToggle.astro";
+import FieldLabel from "./FieldLabel.astro";
+import { site } from "../data/site";
+import { skillGroups } from "../data/skills";
+
+/**
+ * The navigation is computed from what actually exists. A section with no
+ * entries has no link, and a link that goes nowhere is worse than no link.
+ */
+const [experience, education, projects] = await Promise.all([
+  getCollection("experience", ({ data }) => !data.draft),
+  getCollection("education", ({ data }) => !data.draft),
+  getCollection("projects", ({ data }) => !data.draft),
+]);
+
+const nav = [
+  { id: "record", label: "Record", ready: true },
+  { id: "experience", label: "Experience", ready: experience.length > 0 },
+  { id: "education", label: "Education", ready: education.length > 0 },
+  { id: "skills", label: "Skills", ready: skillGroups.length > 0 },
+  { id: "projects", label: "Projects", ready: projects.length > 0 },
+  { id: "contact", label: "Contact", ready: true },
+].filter((item) => item.ready);
+---
+
+<header
+  id="site-header"
+  class="sticky top-0 z-40 border-b border-transparent transition-colors duration-300"
+>
+  <div class="flex items-center justify-between gap-6 px-6 py-3 md:px-14">
+    <a href="#record" class="flex items-baseline gap-3">
+      <span class="font-record text-lg leading-none">{site.name}</span>
+      <FieldLabel class="hidden sm:inline">{site.recordRef}</FieldLabel>
+    </a>
+
+    <div class="flex items-center gap-5">
+      <nav aria-label="Sections">
+        <ul class="hidden items-center gap-5 md:flex">
+          {
+            nav.map((item) => (
+              <li>
+                <a
+                  href={`#${item.id}`}
+                  class="font-code text-[0.62rem] tracking-[0.16em] text-ink-muted uppercase transition-colors hover:text-ink"
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <ThemeToggle />
+    </div>
+  </div>
+</header>
+
+<!-- Section links do not fit beside the record on a phone; they open here. -->
+<details class="fixed right-4 bottom-4 z-40 md:hidden">
+  <summary
+    class="flex size-10 cursor-pointer list-none items-center justify-center rounded-full border border-rule-strong bg-paper-raised text-ink shadow-[var(--shadow-lift)]"
+    aria-label="Open section navigation"
+  >
+    <span class="block h-px w-4 bg-current" />
+  </summary>
+  <nav
+    aria-label="Sections"
+    class="mt-2 min-w-40 rounded-sm border border-rule bg-paper-raised p-3 shadow-[var(--shadow-lift)]"
+  >
+    <ul class="space-y-1">
+      {
+        nav.map((item) => (
+          <li>
+            <a
+              href={`#${item.id}`}
+              class="flex items-center justify-between gap-4 py-1.5 font-code text-[0.62rem] tracking-[0.14em] text-ink-muted uppercase"
+            >
+              {item.label}
+              <Icon name="arrow-right" size={12} />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</details>
+
+<script>
+  const header = document.getElementById("site-header");
+
+  const onScroll = () => {
+    const past = window.scrollY > 24;
+    header?.classList.toggle("border-rule", past);
+    header?.classList.toggle("bg-paper-raised/85", past);
+    header?.classList.toggle("backdrop-blur-sm", past);
+  };
+
+  onScroll();
+  addEventListener("scroll", onScroll, { passive: true });
+
+  // Close the phone menu when a section is chosen.
+  document.querySelectorAll("details a[href^='#']").forEach((a) =>
+    a.addEventListener("click", () => a.closest("details")?.removeAttribute("open")),
+  );
+</script>

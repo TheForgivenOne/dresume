@@ -1,0 +1,339 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-03T00:00:00Z",
+  "title": "Design System: The Registered Record",
+  "extensions": {
+    "colorMeta": {
+      "exam-ink": {
+        "role": "primary",
+        "displayName": "Reserved Carmine",
+        "canonical": "#9d2135",
+        "tonalRamp": [
+          "oklch(0.150 0.048 17.8)",
+          "oklch(0.264 0.048 17.8)",
+          "oklch(0.379 0.048 17.8)",
+          "oklch(0.493 0.048 17.8)",
+          "oklch(0.607 0.048 17.8)",
+          "oklch(0.721 0.048 17.8)",
+          "oklch(0.836 0.048 17.8)",
+          "oklch(0.950 0.048 17.8)"
+        ]
+      },
+      "desk": {
+        "role": "neutral",
+        "displayName": "Desk",
+        "canonical": "#e0d9c8",
+        "tonalRamp": [
+          "oklch(0.150 0.007 88.2)",
+          "oklch(0.264 0.007 88.2)",
+          "oklch(0.379 0.007 88.2)",
+          "oklch(0.493 0.007 88.2)",
+          "oklch(0.607 0.007 88.2)",
+          "oklch(0.721 0.007 88.2)",
+          "oklch(0.836 0.007 88.2)",
+          "oklch(0.950 0.007 88.2)"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Record Paper",
+        "canonical": "#f2eee4",
+        "tonalRamp": [
+          "oklch(0.150 0.004 88.7)",
+          "oklch(0.264 0.004 88.7)",
+          "oklch(0.379 0.004 88.7)",
+          "oklch(0.493 0.004 88.7)",
+          "oklch(0.607 0.004 88.7)",
+          "oklch(0.721 0.004 88.7)",
+          "oklch(0.836 0.004 88.7)",
+          "oklch(0.950 0.004 88.7)"
+        ]
+      },
+      "paper-raised": {
+        "role": "neutral",
+        "displayName": "Raised Paper",
+        "canonical": "#fbf9f4",
+        "tonalRamp": [
+          "oklch(0.150 0.002 88.6)",
+          "oklch(0.264 0.002 88.6)",
+          "oklch(0.379 0.002 88.6)",
+          "oklch(0.493 0.002 88.6)",
+          "oklch(0.607 0.002 88.6)",
+          "oklch(0.721 0.002 88.6)",
+          "oklch(0.836 0.002 88.6)",
+          "oklch(0.950 0.002 88.6)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Dense Ink",
+        "canonical": "#191512",
+        "tonalRamp": [
+          "oklch(0.150 0.003 59.1)",
+          "oklch(0.264 0.003 59.1)",
+          "oklch(0.379 0.003 59.1)",
+          "oklch(0.493 0.003 59.1)",
+          "oklch(0.607 0.003 59.1)",
+          "oklch(0.721 0.003 59.1)",
+          "oklch(0.836 0.003 59.1)",
+          "oklch(0.950 0.003 59.1)"
+        ]
+      },
+      "ink-muted": {
+        "role": "neutral",
+        "displayName": "Muted Ink",
+        "canonical": "#57503f",
+        "tonalRamp": [
+          "oklch(0.150 0.008 88.3)",
+          "oklch(0.264 0.008 88.3)",
+          "oklch(0.379 0.008 88.3)",
+          "oklch(0.493 0.008 88.3)",
+          "oklch(0.607 0.008 88.3)",
+          "oklch(0.721 0.008 88.3)",
+          "oklch(0.836 0.008 88.3)",
+          "oklch(0.950 0.008 88.3)"
+        ]
+      },
+      "ink-subtle": {
+        "role": "neutral",
+        "displayName": "Subtle Ink",
+        "canonical": "#857c68",
+        "tonalRamp": [
+          "oklch(0.150 0.009 86.7)",
+          "oklch(0.264 0.009 86.7)",
+          "oklch(0.379 0.009 86.7)",
+          "oklch(0.493 0.009 86.7)",
+          "oklch(0.607 0.009 86.7)",
+          "oklch(0.721 0.009 86.7)",
+          "oklch(0.836 0.009 86.7)",
+          "oklch(0.950 0.009 86.7)"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Rule",
+        "canonical": "#cdc4b0",
+        "tonalRamp": [
+          "oklch(0.150 0.009 86.7)",
+          "oklch(0.264 0.009 86.7)",
+          "oklch(0.379 0.009 86.7)",
+          "oklch(0.493 0.009 86.7)",
+          "oklch(0.607 0.009 86.7)",
+          "oklch(0.721 0.009 86.7)",
+          "oklch(0.836 0.009 86.7)",
+          "oklch(0.950 0.009 86.7)"
+        ]
+      },
+      "rule-strong": {
+        "role": "neutral",
+        "displayName": "Strong Rule",
+        "canonical": "#a2977c",
+        "tonalRamp": [
+          "oklch(0.150 0.012 88.5)",
+          "oklch(0.264 0.012 88.5)",
+          "oklch(0.379 0.012 88.5)",
+          "oklch(0.493 0.012 88.5)",
+          "oklch(0.607 0.012 88.5)",
+          "oklch(0.721 0.012 88.5)",
+          "oklch(0.836 0.012 88.5)",
+          "oklch(0.950 0.012 88.5)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "The name on the record, and a project title. The only element permitted to reach 6rem."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section divisions."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "An entry's role or a project's name."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Prose and highlights, capped at 68ch."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Field headings and reference codes. Names a value, never a kicker."
+      }
+    },
+    "shadows": [
+      {
+        "name": "lift",
+        "value": "0 1px 2px rgb(25 21 18 / .05), 0 6px 16px rgb(25 21 18 / .07), 0 18px 40px rgb(25 21 18 / .06)",
+        "purpose": "The sheet resting on the desk. Its only resting shadow."
+      },
+      {
+        "name": "emboss",
+        "value": "0 1px 0 rgb(255 255 255 / .7), 0 -1px 0 rgb(25 21 18 / .06), 0 2px 3px rgb(25 21 18 / .07)",
+        "purpose": "The seal at rest: light edge above, dark edge below, soft cast."
+      },
+      {
+        "name": "press",
+        "value": "inset 0 2px 4px rgb(25 21 18 / .16), inset 0 -1px 0 rgb(255 255 255 / .5)",
+        "purpose": "The seal under pressure. The inverse of emboss, and the page's one authored motion."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-settle",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Exponential settle for the sheet tilt and the seal's lift on hover."
+      },
+      {
+        "name": "ease-press",
+        "value": "cubic-bezier(0.32, 0.72, 0, 1)",
+        "purpose": "The seal press. Fast in, settled out."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sheet-edge",
+        "value": "760px"
+      },
+      {
+        "name": "nav-collapse",
+        "value": "768px"
+      },
+      {
+        "name": "entry-margin",
+        "value": "1024px"
+      },
+      {
+        "name": "identity-split",
+        "value": "1024px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Seal",
+      "kind": "custom",
+      "refersTo": "seal",
+      "description": "The dominant gesture and the page's primary action; opens the printable copy.",
+      "html": "<div class=\"ds-seal\"><div><div class=\"ds-seal-label\">Certified copy</div><span class=\"ds-seal-rule\"></span><div class=\"ds-seal-meta\">1 source<br>2 renderings</div><div class=\"ds-seal-open\">Open &#8594;</div></div></div>",
+      "css": ".ds-seal{display:grid;place-items:center;width:200px;height:200px;padding:28px 32px;border-radius:9999px;background:var(--color-paper-raised);color:var(--color-ink);text-align:center;position:relative;box-shadow:0 1px 0 rgba(255,255,255,.7),0 -1px 0 rgba(25,21,18,.06),0 2px 3px rgba(25,21,18,.07),0 1px 2px rgba(25,21,18,.05),0 6px 16px rgba(25,21,18,.07),0 18px 40px rgba(25,21,18,.06);transition:transform 220ms cubic-bezier(.32,.72,0,1),box-shadow 220ms cubic-bezier(.32,.72,0,1);}.ds-seal::before{content:'';position:absolute;inset:.42rem;border-radius:9999px;border:2px solid rgba(157,33,53,.45);}.ds-seal::after{content:'';position:absolute;inset:.78rem;border-radius:9999px;border:1px solid var(--color-rule-strong);}.ds-seal:hover{transform:scale(1.014);}.ds-seal:hover::before{border-color:var(--color-carmine);}.ds-seal:active{transform:scale(.985);box-shadow:inset 0 2px 4px rgba(25,21,18,.16),inset 0 -1px 0 rgba(255,255,255,.5);}.ds-seal-label{font-family:'Azeret Mono',monospace;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--color-ink);}.ds-seal-rule{display:block;width:2rem;height:1px;background:var(--color-rule-strong);margin:.5rem auto;}.ds-seal-meta{font-family:'Azeret Mono',monospace;font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;color:var(--color-ink-subtle);line-height:1.5;}.ds-seal-open{margin-top:.5rem;font-family:'Azeret Mono',monospace;font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:var(--color-ink-muted);}"
+    },
+    {
+      "name": "Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Names a technology in a ruled index entry. Never rounded, never selectable.",
+      "html": "<span class=\"ds-chip\">TypeScript</span>",
+      "css": ".ds-chip{display:inline-flex;align-items:center;border:1px solid var(--color-rule);padding:.15rem .5rem;font-family:'Azeret Mono',monospace;font-size:.64rem;letter-spacing:.06em;color:var(--color-ink-muted);}"
+    },
+    {
+      "name": "Field label",
+      "kind": "chip",
+      "refersTo": "tag-field",
+      "description": "Tracks a value or names a column. Never a kicker above a heading.",
+      "html": "<span class=\"ds-field\">Years in practice</span>",
+      "css": ".ds-field{font-family:'Azeret Mono',monospace;font-size:.62rem;line-height:1.2;letter-spacing:.16em;text-transform:uppercase;color:var(--color-ink-subtle);}"
+    },
+    {
+      "name": "Theme toggle",
+      "kind": "button",
+      "refersTo": "theme-toggle",
+      "description": "Round, hairline, muted; label updates to name the action it performs.",
+      "html": "<button class=\"ds-toggle\" aria-label=\"Switch to dark theme\"><svg width=\"17\" height=\"17\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"><path d=\"M20.4 13.7A8.4 8.4 0 0 1 10.3 3.6a8.4 8.4 0 1 0 10.1 10.1Z\"/></svg></button>",
+      "css": ".ds-toggle{display:inline-flex;align-items:center;justify-content:center;width:2.25rem;height:2.25rem;border-radius:9999px;border:1px solid var(--color-rule);background:transparent;color:var(--color-ink-muted);cursor:pointer;transition:border-color .2s,color .2s;}.ds-toggle:hover{border-color:var(--color-rule-strong);color:var(--color-ink);}"
+    },
+    {
+      "name": "Entry row",
+      "kind": "card",
+      "refersTo": "seal",
+      "description": "A dated division of the record. The current appointment is the only row carrying the reserved ink.",
+      "html": "<article class=\"ds-entry\"><div class=\"ds-entry-time\"><span class=\"ds-field\">EX-01</span><div class=\"ds-entry-date\"><span class=\"ds-entry-mark\"></span>Mar 2024 – Present</div></div><div><h3 class=\"ds-entry-title\">Staff Engineer <span class=\"ds-entry-org\">· Acme</span></h3><p class=\"ds-entry-summary\">Two or three sentences on the scope of the role.</p></div><aside class=\"ds-entry-note\"><span class=\"ds-field\">Note</span><p>Why it is on the margin.</p></aside></article>",
+      "css": ".ds-entry{display:grid;grid-template-columns:8.5rem 1fr 15rem;gap:0 2rem;padding:1.5rem 0;border-top:1px solid var(--color-rule);align-items:start;}.ds-entry-time{display:flex;flex-direction:column;gap:.25rem;}.ds-entry-date{display:flex;align-items:center;gap:.5rem;font-family:'Azeret Mono',monospace;font-size:.72rem;color:var(--color-ink-muted);font-variant-numeric:tabular-nums;white-space:nowrap;}.ds-entry-mark{width:.4rem;height:.4rem;background:var(--color-carmine);flex:0 0 auto;}.ds-entry-title{font-family:'Libre Caslon Text',Georgia,serif;font-weight:400;font-size:1.35rem;line-height:1.25;margin:0;}.ds-entry-org{color:var(--color-ink-muted);}.ds-entry-summary{margin:.75rem 0 0;max-width:68ch;font-family:Archivo,sans-serif;font-size:.95rem;line-height:1.7;color:var(--color-ink-muted);}.ds-entry-note{border-left:1px solid var(--color-rule-strong);padding-left:1.25rem;padding-top:.125rem;}.ds-entry-note p{margin:.375rem 0 0;font-size:.82rem;line-height:1.65;color:var(--color-ink-subtle);font-style:italic;}"
+    },
+    {
+      "name": "Counted stack",
+      "kind": "custom",
+      "refersTo": "seal",
+      "description": "Years of practice as a run of ruled cells. Always draws an empty tail; a full run would read as a solid bar.",
+      "html": "<div class=\"ds-stack\"><div class=\"ds-stack-cells\"><i class=\"ds-cell\" data-filled=\"true\"></i><i class=\"ds-cell\" data-filled=\"true\"></i><i class=\"ds-cell\" data-filled=\"true\"></i><i class=\"ds-cell\"></i><i class=\"ds-cell\"></i></div><span class=\"ds-stack-num\">3</span><span class=\"ds-field\">Years in practice</span></div>",
+      "css": ".ds-stack{display:inline-flex;align-items:center;gap:1rem;}.ds-stack-cells{display:flex;align-items:flex-end;gap:3px;}.ds-cell{width:.72rem;height:1.4rem;border:1px solid var(--color-rule-strong);display:block;}.ds-cell[data-filled='true']{background:var(--color-ink);border-color:var(--color-ink);}.ds-stack-num{font-family:'Libre Caslon Text',Georgia,serif;font-size:1.5rem;line-height:1;font-variant-numeric:tabular-nums;color:var(--color-ink);}"
+    },
+    {
+      "name": "Skill row",
+      "kind": "card",
+      "refersTo": "seal",
+      "description": "A grade-point row. The scale is stated once beneath the group, never per row.",
+      "html": "<li class=\"ds-skill\"><span>Evaluation harnesses</span><span class=\"ds-pips\"><i data-filled=\"true\"></i><i data-filled=\"true\"></i><i data-filled=\"true\"></i><i data-filled=\"true\"></i><i></i></span></li>",
+      "css": ".ds-skill{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.375rem 0;border-bottom:1px dotted var(--color-rule);list-style:none;font-family:Archivo,sans-serif;font-size:.9rem;color:var(--color-ink-muted);}.ds-pips{display:flex;gap:3px;}.ds-pips i{width:.42rem;height:.42rem;border:1px solid var(--color-rule-strong);display:block;}.ds-pips i[data-filled='true']{background:var(--color-ink);border-color:var(--color-ink);}"
+    },
+    {
+      "name": "Nav link",
+      "kind": "nav",
+      "refersTo": "seal",
+      "description": "Tracked mono capitals in the header; generated only for sections that have content.",
+      "html": "<a class=\"ds-nav\" href=\"#experience\">Experience</a>",
+      "css": ".ds-nav{font-family:'Azeret Mono',monospace;font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--color-ink-muted);text-decoration:none;transition:color .2s;}.ds-nav:hover{color:var(--color-ink);}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Registered Record",
+    "overview": "This system treats a resume as an official document rather than a marketing page. The visual world is a registrar's transcript: a ruled sheet of warm record paper lying on a desk, its divisions separated by hairlines, its columns headed in small tracked capitals, and its one claim to authority made by a seal struck into the paper. Density is deliberately low and the reading order is fixed, because the reader is scanning rather than reading. Depth is real rather than implied: the record is one physical sheet inside a viewing volume, and one piece of motion carries the page — the seal resolving from an embossed outset to an inset as it is pressed.",
+    "keyCharacteristics": [
+      "Warm throughout. No blue-grays, no pure black, no pure white.",
+      "One ink, one place. The carmine appears exactly once per screen.",
+      "Everything on one rhythm of 1.75rem.",
+      "Hairlines and rules do the structural work; shadows only carry relief.",
+      "Motion is one authored gesture and it is optional."
+    ],
+    "rules": [
+      {
+        "name": "The One Ink Rule",
+        "section": "colors",
+        "body": "The reserved carmine appears exactly once per screen, on the current appointment. Never on links, hover states, badges, buttons, or section headings. Interactive states use dense ink."
+      },
+      {
+        "name": "The Warmth Rule",
+        "section": "colors",
+        "body": "No blue-grey anywhere. Every neutral is tinted warm toward the paper. A cool grey reads as a template; a warm one reads as a document."
+      },
+      {
+        "name": "The No-Kicker Rule",
+        "section": "typography",
+        "body": "No eyebrow, no kicker, no small label above a heading. A heading carries its own weight. Field labels are permitted only where they name a column or a value."
+      },
+      {
+        "name": "The Reference Code Rule",
+        "section": "typography",
+        "body": "Reference codes are numbered only when the number carries information. Decorative numbering is prohibited."
+      },
+      {
+        "name": "The Flat-By-Default Rule",
+        "section": "elevation",
+        "body": "Surfaces are flat at rest. Only the sheet and the seal carry a resting shadow; every other element separates with a hairline."
+      },
+      {
+        "name": "The One Gesture Rule",
+        "section": "elevation",
+        "body": "Depth appears in exactly one authored moment — the seal press. Everything else is static or a state change, and all of it is suppressed under prefers-reduced-motion."
+      }
+    ],
+    "dos": [
+      "Do keep every vertical measurement on the 1.75rem baseline.",
+      "Do keep prose at or under 68ch in Archivo at 0.95rem or larger.",
+      "Do let sections with no content render nothing at all, heading and nav link included.",
+      "Do keep internal links going through withBase() so the deployment base path is applied.",
+      "Do set font-variant-numeric: tabular-nums on anything that is a measurement.",
+      "Do suppress the sheet tilt and every layer transform under prefers-reduced-motion: reduce."
+    ],
+    "donts": [
+      "Don't use the reserved carmine for anything but the current appointment.",
+      "Don't add a second accent colour, a --color-accent token, or a blue-grey neutral.",
+      "Don't add a tailwind.config.js — Tailwind 4 has no config file; tokens live in @theme.",
+      "Don't tilt individual cards or animate sections on scroll.",
+      "Don't use glass, backdrop blur, gradient text, or Unicode glyphs as icons.",
+      "Don't put a kicker or eyebrow above a heading.",
+      "Don't let screen styling reach the printable copy."
+    ]
+  }
+}

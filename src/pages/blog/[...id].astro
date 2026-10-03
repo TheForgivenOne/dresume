@@ -1,0 +1,44 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import FieldLabel from "../../components/FieldLabel.astro";
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import { isoDate } from "../../lib/date";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog", ({ data }) => !data.draft);
+  return posts.map((post) => ({ params: { id: post.id }, props: { post } }));
+}
+
+interface Props {
+  post: CollectionEntry<"blog">;
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<BaseLayout title={`${post.data.title} — blog`} description={post.data.description}>
+  <article class="max-w-[68ch]">
+    <header>
+      <h1 class="font-record text-[clamp(2.4rem,7vw,4rem)] leading-[1.02]">
+        {post.data.title}
+      </h1>
+
+      <div
+        class="mt-6 flex items-center gap-4 border-t border-rule-strong pt-4"
+      >
+        <FieldLabel>Published</FieldLabel>
+        <time
+          class="font-code text-[0.62rem] tracking-[0.08em] text-ink-muted tabular"
+          datetime={isoDate(post.data.pubDate)}
+        >
+          {post.data.pubDate.toDateString()}
+        </time>
+      </div>
+    </header>
+
+    <div class="prose-record mt-10 max-w-[68ch]">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>

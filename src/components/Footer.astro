@@ -1,0 +1,57 @@
+---
+import Icon from "./Icon.astro";
+import FieldLabel from "./FieldLabel.astro";
+import { site } from "../data/site";
+---
+
+<footer class="mt-20 border-t border-rule-strong pt-8 pb-16">
+  <div
+    class="flex flex-col gap-8 md:flex-row md:items-end md:justify-between"
+  >
+    <div>
+      <FieldLabel>Record</FieldLabel>
+      <p class="mt-2 font-record text-xl leading-tight">{site.name}</p>
+      <p class="mt-1 font-code text-[0.62rem] tracking-[0.1em] text-ink-subtle">
+        {site.recordRef}
+      </p>
+    </div>
+
+    <div class="flex items-center gap-6">
+      <a
+        href={`mailto:${site.email}`}
+        class="inline-flex items-center gap-2 font-code text-[0.62rem] tracking-[0.14em] text-ink-muted uppercase underline decoration-rule underline-offset-[0.24em] transition-colors hover:text-ink hover:decoration-ink"
+      >
+        <Icon name="mail" size={14} />
+        Email
+      </a>
+
+      {
+        site.social.github && (
+          <a
+            href={site.social.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 font-code text-[0.62rem] tracking-[0.14em] text-ink-muted uppercase underline decoration-rule underline-offset-[0.24em] transition-colors hover:text-ink hover:decoration-ink"
+          >
+            GitHub
+            <Icon name="arrow-up-right" size={12} />
+          </a>
+        )
+      }
+
+      {
+        site.social.linkedin && (
+          <a
+            href={site.social.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 font-code text-[0.62rem] tracking-[0.14em] text-ink-muted uppercase underline decoration-rule underline-offset-[0.24em] transition-colors hover:text-ink hover:decoration-ink"
+          >
+            LinkedIn
+            <Icon name="arrow-up-right" size={12} />
+          </a>
+        )
+      }
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,52 @@
+---
+import { SCALE, skillGroups } from "../data/skills";
+
+/**
+ * Skills as a grade point table. Two ruled columns of paired rows so a screener
+ * can read the whole capability set in one vertical pass, with the scale
+ * stated once so the rating is never ambiguous.
+ */
+---
+
+<div class="grid grid-cols-1 gap-x-10 gap-y-8 sm:grid-cols-2">
+  {
+    skillGroups.map((group) => (
+      <div>
+        <h3 class="mb-3 border-b border-rule pb-1.5 font-code text-[0.62rem] tracking-[0.18em] text-ink-subtle uppercase">
+          {group.group}
+        </h3>
+
+        <ul>
+          {group.skills.map((skill) => (
+            <li class="flex items-center justify-between gap-4 border-b border-dotted border-rule py-1.5">
+              <span class="text-[0.95rem] text-ink-muted">{skill.name}</span>
+
+              <span class="flex items-center gap-1.5">
+                <span class="flex gap-[3px]" aria-hidden="true">
+                  {Array.from({ length: SCALE }, (_, i) => (
+                    <span
+                      class="size-[0.42rem] border border-rule-strong"
+                      data-filled={i < skill.level ? "true" : "false"}
+                      style={
+                        i < skill.level
+                          ? "background-color: var(--color-ink); border-color: var(--color-ink);"
+                          : undefined
+                      }
+                    />
+                  ))}
+                </span>
+                <span class="sr-only">
+                  {skill.level} of {SCALE}
+                </span>
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))
+  }
+</div>
+
+<p class="mt-5 font-code text-[0.62rem] tracking-[0.14em] text-ink-subtle uppercase">
+  Self-reported · {SCALE} denotes day-to-day fluency
+</p>

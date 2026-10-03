@@ -1,0 +1,138 @@
+---
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import ThemeScript from "../components/ThemeScript.astro";
+import { site } from "../data/site";
+import { withBase } from "../lib/paths";
+import "../styles/global.css";
+import "../styles/depth.css";
+
+/**
+ * The screen record. One continuous sheet in a viewing volume: the ground
+ * falls away, the paper is the plane, the content sits proud of it, and the
+ * seal stands highest of all.
+ */
+interface Props {
+  title?: string;
+  description?: string;
+  ogType?: string;
+}
+
+const {
+  title = `${site.name} — ${site.title}`,
+  description = site.tagline,
+  ogType = "website",
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL(withBase("/og.png"), Astro.site).href;
+---
+
+<!doctype html>
+<html lang="en" style={`--exam-ink: ${site.examinationInk}`}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" type="application/rss+xml" title={site.name} href={withBase("/rss.xml")} />
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:site_name" content={site.name} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="icon" type="image/svg+xml" href={withBase("/favicon.svg")} />
+    <meta name="generator" content={Astro.generator} />
+
+    <ThemeScript />
+  </head>
+
+  <body>
+    <a
+      href="#record"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:border focus:border-ink focus:bg-paper-raised focus:px-3 focus:py-2"
+    >
+      Skip to the record
+    </a>
+
+    <div class="record-stage relative py-8 md:py-12">
+      <!-- The desk the record is lying on. -->
+      <div
+        class="record-ground layer-ground pointer-events-none fixed inset-0 -z-10"
+        aria-hidden="true"
+      >
+      </div>
+
+      <div class="record-sheet">
+        <Header />
+
+        <main class="layer-content px-6 pt-10 md:px-14 md:pt-14">
+          <slot />
+        </main>
+
+        <div class="layer-content px-6 md:px-14">
+          <Footer />
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
+<script>
+  /**
+   * The whole record tilts as one physical object. Nothing on it wobbles
+   * independently — a printed sheet does not flutter, and a resume that
+   * animates each card is a resume nobody can read.
+   */
+  const sheet = document.querySelector<HTMLElement>(".record-sheet");
+  const fine = window.matchMedia("(hover: hover) and (pointer: fine)");
+  const calm = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  if (sheet && fine.matches && !calm.matches) {
+    const MAX = 2.4; // degrees. Past ~4 it reads as a toy.
+    let frame = 0;
+
+    const apply = (rx: number, ry: number) => {
+      sheet.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
+    };
+
+    addEventListener(
+      "pointermove",
+      (e) => {
+        const px = e.clientX / innerWidth - 0.5;
+        const py = e.clientY / innerHeight - 0.5;
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(() => apply(-py * MAX, px * MAX));
+      },
+      { passive: true },
+    );
+
+    // Settle flat when the pointer leaves, or the record stays canted.
+    document.addEventListener("pointerleave", () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => apply(0, 0));
+    });
+  }
+
+  // The ruled baselines draw in once. A transform only — nothing starts
+  // hidden, so a capture can never read an undrawn rule as a missing element.
+  const baselines = document.querySelectorAll<HTMLElement>(".ruled-baseline");
+  if (baselines.length && !calm.matches) {
+    requestAnimationFrame(() => {
+      baselines.forEach((el, i) => {
+        el.style.animationDelay = `${120 + i * 90}ms`;
+        el.dataset.draw = "true";
+      });
+    });
+  }
+</script>

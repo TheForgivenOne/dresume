@@ -1,0 +1,37 @@
+---
+import Icon from "./Icon.astro";
+---
+
+<button
+  id="theme-toggle"
+  type="button"
+  aria-label="Switch to dark theme"
+  title="Switch theme"
+  class="inline-flex size-9 items-center justify-center rounded-full border border-rule text-ink-muted transition-colors hover:border-rule-strong hover:text-ink"
+>
+  <Icon name="sun" class="hidden dark:block" size={17} />
+  <Icon name="moon" class="block dark:hidden" size={17} />
+</button>
+
+<script>
+  const btn = document.getElementById("theme-toggle");
+
+  btn?.addEventListener("click", () => {
+    const dark = document.documentElement.classList.toggle("dark");
+    const label = dark ? "Switch to light theme" : "Switch to dark theme";
+    btn.setAttribute("aria-label", label);
+    try {
+      localStorage.setItem("theme", dark ? "dark" : "light");
+    } catch {
+      /* Preference simply will not persist. */
+    }
+  });
+
+  // Keep the label honest on load, in case the stored theme disagrees with
+  // the class the inline head script set.
+  const isDark = document.documentElement.classList.contains("dark");
+  btn?.setAttribute(
+    "aria-label",
+    isDark ? "Switch to light theme" : "Switch to dark theme",
+  );
+</script>

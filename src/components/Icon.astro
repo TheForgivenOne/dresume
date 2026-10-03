@@ -1,0 +1,41 @@
+---
+/**
+ * Authored icons. One consistent stroke weight and cap style across the set —
+ * no icon library, no Unicode glyph standing in for a mark.
+ *
+ * Social identities are deliberately absent: on a record they read better as
+ * the name in text than as a brand logo, and it keeps the stroke honest.
+ */
+interface Props {
+  name: "sun" | "moon" | "arrow-up-right" | "arrow-right" | "mail" | "rosette";
+  class?: string;
+  size?: number;
+}
+
+const { name, class: className = "", size = 20 } = Astro.props;
+
+const paths: Record<Props["name"], string> = {
+  sun: "M12 2.6v2.2M12 19.2v2.2M4.4 12H2.2M21.8 12h-2.2M6.3 6.3 4.8 4.8M19.2 19.2l-1.5-1.5M17.7 6.3l1.5-1.5M4.8 19.2l1.5-1.5M12 8.4a3.6 3.6 0 1 0 0 7.2 3.6 3.6 0 0 0 0-7.2Z",
+  moon: "M20.4 13.7A8.4 8.4 0 0 1 10.3 3.6a8.4 8.4 0 1 0 10.1 10.1Z",
+  "arrow-up-right": "M7.4 16.6 16.6 7.4M8.6 7.4h8v8",
+  "arrow-right": "M4.4 12h15.2M13.6 6l6 6-6 6",
+  mail: "M3.4 6.6h17.2v10.8H3.4zM3.4 7.2 12 13l8.6-5.8",
+  rosette: "M12 3.2 14 6l3.3-.5.4 3.3 2.9 1.7-1.7 2.9.5 3.3L16 15.8 12 18.6l-4-2.8-3.4.9-.5-3.3-1.7-2.9 2.9-1.7.4-3.3L10 6Z",
+};
+---
+
+<svg
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.5"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+  class={className}
+>
+  <path d={paths[name]}></path>
+</svg>

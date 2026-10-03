@@ -1,0 +1,51 @@
+---
+import Icon from "./Icon.astro";
+import { withBase } from "../lib/paths";
+
+/**
+ * THE SEAL — the dominant gesture on the page, and its primary action.
+ *
+ * It outranks the name, which is the one thing nothing else is permitted to do.
+ * It states the mechanism in its own words: one source, two renderings. Pressing
+ * it is the page's one authored motion — the emboss resolves to an inset, the
+ * way a struck stamp sits into paper.
+ */
+interface Props {
+  href: string;
+  label?: string;
+}
+
+const { href, label = "Certified copy" } = Astro.props;
+---
+
+<a
+  href={withBase(href)}
+  class="seal group px-7 py-9 text-center"
+  style="width: clamp(13rem, 34vh, 17.5rem); height: clamp(13rem, 34vh, 17.5rem);"
+  aria-label={`Open the ${label.toLowerCase()} — a printable A4 CV rendered from the same content as this page`}
+>
+  <span class="flex flex-col items-center gap-2">
+    <Icon
+      name="rosette"
+      size={20}
+      class="text-carmine transition-transform duration-500 ease-settle group-hover:rotate-[18deg]"
+    />
+    <span
+      class="font-code text-[0.62rem] leading-[1.5] tracking-[0.2em] text-ink uppercase"
+    >
+      {label}
+    </span>
+    <span class="h-px w-8 bg-rule-strong"></span>
+    <span
+      class="font-code text-[0.62rem] leading-[1.5] tracking-[0.12em] text-ink-subtle uppercase tabular"
+    >
+      1 source<br />2 renderings
+    </span>
+    <span
+      class="mt-1 inline-flex items-center gap-1 font-code text-[0.62rem] tracking-[0.14em] text-ink-muted uppercase"
+    >
+      Open
+      <Icon name="arrow-right" size={12} />
+    </span>
+  </span>
+</a>

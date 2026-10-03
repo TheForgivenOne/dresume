@@ -1,0 +1,44 @@
+---
+/**
+ * Named 404.astro, which Astro emits as dist/404.html — the exact filename
+ * GitHub Pages serves for an unmatched path. Naming it 404.html.astro would
+ * instead emit a literal 404.html.astro and never be picked up.
+ */
+import { site } from "../data/site";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Not in the record — {site.name}</title>
+    <meta name="robots" content="noindex" />
+  </head>
+  <body
+    style="margin:0;min-height:100vh;display:grid;place-items:center;background:#f2eee4;color:#191512;font-family:ui-sans-serif,system-ui,sans-serif;padding:2rem"
+  >
+    <div style="max-width:38rem">
+      <p
+        style="font-family:ui-monospace,monospace;font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;color:#857c68;margin:0"
+      >
+        404 · {site.recordRef}
+      </p>
+      <h1
+        style="font-family:Georgia,serif;font-weight:400;font-size:clamp(2.4rem,7vw,4rem);line-height:1;margin:0.95rem 0 0;letter-spacing:-0.02em"
+      >
+        No such entry
+      </h1>
+      <p style="margin:0.95rem 0 0;line-height:1.65;color:#57503f">
+        That page is not part of this record. It may have been renamed, or the
+        link may be mistyped.
+      </p>
+      <a
+        href={import.meta.env.BASE_URL}
+        style="display:inline-block;margin-top:2rem;font-family:ui-monospace,monospace;font-size:0.62rem;letter-spacing:0.16em;text-transform:uppercase;color:#191512;text-decoration:underline;text-underline-offset:0.3em"
+      >
+        Return to the record
+      </a>
+    </div>
+  </body>
+</html>

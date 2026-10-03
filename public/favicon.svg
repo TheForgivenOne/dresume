@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="The registered record">
+  <!-- A ruled record seen end-on: a struck roundel holding two rules. -->
+  <circle cx="16" cy="16" r="15" fill="#f2eee4" />
+  <circle cx="16" cy="16" r="13.2" fill="none" stroke="#9d2135" stroke-width="2" />
+  <rect x="9" y="12.4" width="14" height="1.7" fill="#191512" />
+  <rect x="9" y="19.9" width="9.5" height="1.7" fill="#191512" />
+</svg>

@@ -1,0 +1,257 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Seal from "../components/Seal.astro";
+import CountedStack from "../components/CountedStack.astro";
+import FieldLabel from "../components/FieldLabel.astro";
+import SectionHead from "../components/SectionHead.astro";
+import DatedRow from "../components/DatedRow.astro";
+import ProjectRow from "../components/ProjectRow.astro";
+import SkillsTable from "../components/SkillsTable.astro";
+import Icon from "../components/Icon.astro";
+import { getCollection } from "astro:content";
+import { site, socialEntries } from "../data/site";
+import { skillGroups } from "../data/skills";
+import { yearsBetween } from "../lib/date";
+
+const [experience, education, projects] = await Promise.all([
+  getCollection("experience", ({ data }) => !data.draft),
+  getCollection("education", ({ data }) => !data.draft),
+  getCollection("projects", ({ data }) => !data.draft),
+]);
+
+const byDateDesc = <T extends { data: { order: number; start: Date } }>(
+  a: T,
+  b: T,
+) => a.data.order - b.data.order || b.data.start.valueOf() - a.data.start.valueOf();
+
+const jobs = [...experience].sort(byDateDesc);
+const studies = [...education].sort(byDateDesc);
+const works = [...projects].sort(
+  (a, b) => a.data.order - b.data.order || (a.data.year ?? "").localeCompare(b.data.year ?? ""),
+);
+
+// Years in practice, taken from the record itself rather than asserted in it.
+const earliest = jobs.length
+  ? new Date(Math.min(...jobs.map((j) => j.data.start.valueOf())))
+  : null;
+const yearsInField = earliest ? yearsBetween(earliest, null) : 0;
+
+const contactLinks = socialEntries.map(([id, url]) => ({
+  id,
+  url,
+  label: id === "x" ? "X" : id.charAt(0).toUpperCase() + id.slice(1),
+}));
+
+const totals = [
+  jobs.length && `${jobs.length} ${jobs.length === 1 ? "appointment" : "appointments"}`,
+  studies.length && `${studies.length} ${studies.length === 1 ? "qualification" : "qualifications"}`,
+  works.length && `${works.length} ${works.length === 1 ? "project" : "projects"}`,
+].filter(Boolean);
+---
+
+<BaseLayout>
+  <!-- ============================================================ IDENTITY -->
+  <section id="record" class="scroll-mt-28">
+    <div class="grid grid-cols-1 gap-x-14 gap-y-14 lg:grid-cols-[1fr_auto] lg:items-start">
+      <div>
+        <h1
+          class="font-record text-[clamp(3.2rem,11vw,6rem)] leading-[0.92] tracking-[-0.02em]"
+        >
+          {site.name}
+        </h1>
+
+        <!-- Role, location and availability share one ruled baseline. -->
+        <div
+          class="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-rule-strong pt-4"
+        >
+          <span class="text-[0.95rem] font-medium text-ink">{site.title}</span>
+          <span class="font-code text-[0.62rem] tracking-[0.1em] text-ink-subtle uppercase">
+            {site.location}
+          </span>
+          {
+            site.availability && (
+              <span class="inline-flex items-center gap-2 font-code text-[0.62rem] tracking-[0.14em] text-ink-muted uppercase">
+                <span class="under-examination size-[0.4rem]" aria-hidden="true" />
+                {site.availability}
+              </span>
+            )
+          }
+        </div>
+
+        <p class="mt-8 max-w-[52ch] text-[1.05rem] leading-relaxed text-ink-muted">
+          {site.tagline}
+        </p>
+
+        {
+          earliest && (
+            <div class="mt-9">
+              <CountedStack years={yearsInField} label="Years in practice" />
+            </div>
+          )
+        }
+      </div>
+
+      <!-- The seal. The one element permitted to outrank the name. Beneath it,
+           the scope of the record, which is the first thing a screener wants. -->
+      <div class="layer-seal flex flex-col items-center gap-8 lg:w-64">
+        <Seal href="/cv/" />
+
+        {
+          totals.length > 0 && (
+            <div class="w-full border-t border-rule pt-4">
+              <FieldLabel>Record contains</FieldLabel>
+              <ul class="mt-2.5 space-y-1">
+                {totals.map((t) => (
+                  <li class="font-code text-[0.62rem] tracking-[0.06em] text-ink-muted tabular">
+                    {t}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+      </div>
+    </div>
+
+    <div class="mt-16 ruled-baseline" role="presentation"></div>
+  </section>
+
+  <!-- ================================================================ ABOUT -->
+  <section class="pt-16">
+    <SectionHead id="about" title="The record" />
+    <div class="max-w-[68ch] space-y-4">
+      {site.bio.map((para) => <p class="text-[0.95rem] leading-relaxed text-ink-muted">{para}</p>)}
+    </div>
+  </section>
+
+  <!-- =========================================================== EXPERIENCE -->
+  {
+    jobs.length > 0 && (
+      <section class="pt-20">
+        <SectionHead
+          id="experience"
+          title="Experience"
+          meta={`${jobs.length} recorded`}
+        />
+        <div>
+          {jobs.map((job) => (
+            <DatedRow
+              ref={job.data.ref}
+              role={job.data.role}
+              organisation={job.data.organisation}
+              location={job.data.location}
+              start={job.data.start}
+              end={job.data.end}
+              summary={job.data.summary}
+              highlights={job.data.highlights}
+              tags={job.data.tags}
+              note={job.data.note}
+            />
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  <!-- ============================================================ EDUCATION -->
+  {
+    studies.length > 0 && (
+      <section class="pt-20">
+        <SectionHead
+          id="education"
+          title="Education"
+          meta={`${studies.length} recorded`}
+        />
+        <div>
+          {studies.map((item) => (
+            <DatedRow
+              ref={item.data.ref}
+              role={item.data.qualification}
+              organisation={item.data.institution}
+              location={item.data.location}
+              start={item.data.start}
+              end={item.data.end}
+              summary={item.data.summary}
+              tags={item.data.tags}
+              note={item.data.note}
+            />
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  <!-- =============================================================== SKILLS -->
+  {
+    skillGroups.length > 0 && (
+      <section class="pt-20">
+        <SectionHead id="skills" title="Skills" />
+        <SkillsTable />
+      </section>
+    )
+  }
+
+  <!-- ============================================================= PROJECTS -->
+  {
+    works.length > 0 && (
+      <section class="pt-20">
+        <SectionHead
+          id="projects"
+          title="Projects"
+          meta={`${works.length} recorded`}
+        />
+        <div>
+          {works.map((project, i) => (
+            <ProjectRow project={project} index={i} />
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  <!-- ============================================================== CONTACT -->
+  <section id="contact" class="scroll-mt-28 pt-20">
+    <SectionHead id="contact-title" title="Contact" />
+
+    <div class="grid grid-cols-1 gap-10 md:grid-cols-[1fr_auto] md:items-end">
+      <div class="max-w-[52ch]">
+        <FieldLabel>Open to</FieldLabel>
+        <p class="mt-2 text-[1.05rem] leading-relaxed text-ink-muted">
+          {
+            site.availability
+              ? `Currently ${site.availability.toLowerCase()}. The quickest route is email; the seal above is a printable copy of this record.`
+              : "The quickest route is email."
+          }
+        </p>
+
+        <a
+          href={`mailto:${site.email}`}
+          class="mt-6 inline-flex items-center gap-2.5 border-b border-rule-strong pb-1 font-record text-[1.5rem] transition-colors hover:border-ink"
+        >
+          <Icon name="mail" size={18} class="text-ink-subtle" />
+          {site.email}
+        </a>
+
+        {
+          contactLinks.length > 0 && (
+            <ul class="mt-6 flex flex-wrap gap-x-6 gap-y-2">
+              {contactLinks.map(({ url, label }) => (
+                <li>
+                  <a
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-1.5 font-code text-[0.62rem] tracking-[0.14em] text-ink-muted uppercase underline decoration-rule underline-offset-[0.24em] transition-colors hover:text-ink hover:decoration-ink"
+                  >
+                    {label}
+                    <Icon name="arrow-up-right" size={12} />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>

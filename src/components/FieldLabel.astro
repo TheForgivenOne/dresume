@@ -1,0 +1,23 @@
+---
+/**
+ * A field label, in the register of a registrar's column heading. Small,
+ * tracked, mono, and always naming a value rather than decorating a heading —
+ * never used as a kicker above a title.
+ *
+ * Content arrives through the default slot; see the note in Tag.astro.
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className = "" } = Astro.props;
+---
+
+<span
+  class:list={[
+    "font-code text-[0.62rem] leading-tight tracking-[0.16em] text-ink-subtle uppercase",
+    className,
+  ]}
+>
+  <slot />
+</span>
